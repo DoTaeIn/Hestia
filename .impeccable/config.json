@@ -1,0 +1,20 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-radius",
+        "value": "999px",
+        "createdAt": "2026-08-09T15:03:47.528Z",
+        "reason": "pill-shaped count badge"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "#000",
+        "createdAt": "2026-08-12T18:06:27.046Z",
+        "reason": "mask-image alpha stop, not a rendered color"
+      }
+    ]
+  }
+}

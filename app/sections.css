@@ -1,0 +1,623 @@
+/* Section-level styles. Tokens and primitives live in globals.css. */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-block: 8rem 5rem;
+}
+
+.hero h1 {
+  max-width: 20ch;
+  text-shadow: var(--hero-glow-now);
+}
+
+.hero .kept {
+  text-shadow: var(--hero-glow-kept);
+}
+
+.hero-lead {
+  margin: clamp(1.75rem, 4vh, 2.75rem) 0 0;
+}
+
+.hero-cta {
+  margin-top: clamp(2rem, 5vh, 3.25rem);
+}
+
+.hero-scroll {
+  margin: clamp(3rem, 9vh, 6rem) 0 0;
+  font-size: 0.85rem;
+}
+
+.hero-scroll a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--foam-faint);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.4s var(--ease);
+}
+
+.hero-scroll a:hover {
+  color: var(--wake);
+}
+
+.hero-scroll svg {
+  transition: transform 0.5s var(--ease);
+}
+
+.hero-scroll a:hover svg {
+  transform: translateX(4px);
+}
+
+/* ---------- waitlist ---------- */
+
+.waitlist-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  max-width: 30rem;
+}
+
+.waitlist-row input {
+  flex: 1 1 15rem;
+}
+
+.waitlist-msg {
+  max-width: 30rem;
+  margin: 0.85rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--foam-faint);
+}
+
+.waitlist-msg.is-ok {
+  color: var(--amber);
+}
+
+.waitlist-msg.is-err {
+  color: var(--alarm);
+}
+
+/* ---------- version history ---------- */
+
+.hist {
+  display: grid;
+  grid-template-columns: minmax(16rem, 22rem) 1fr;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: start;
+}
+
+.hist-rail {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.hist-rail::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 1.4rem;
+  bottom: 1.4rem;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--amber-deep), var(--rail-live));
+}
+
+.knot {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  grid-template-areas:
+    "dot no meta"
+    ". summary summary";
+  align-items: center;
+  gap: 0.15rem 0.75rem;
+  width: 100%;
+  padding: 0.85rem 0.9rem 0.85rem 0;
+  border: 0;
+  background: none;
+  color: var(--foam-faint);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.45s var(--ease);
+}
+
+.knot-dot {
+  grid-area: dot;
+  width: 13px;
+  height: 13px;
+  border: 1px solid var(--foam-faint);
+  border-radius: 50%;
+  background: var(--abyss);
+  transition:
+    border-color 0.45s var(--ease),
+    box-shadow 0.55s var(--ease),
+    background 0.45s var(--ease);
+}
+
+.knot-no {
+  grid-area: no;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+}
+
+.knot-meta {
+  grid-area: meta;
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+}
+
+.knot-summary {
+  grid-area: summary;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.knot:hover {
+  color: var(--foam-dim);
+}
+
+.knot.is-past {
+  color: var(--foam-dim);
+}
+
+.knot.is-past .knot-dot {
+  border-color: var(--amber);
+  background: var(--amber-dot);
+}
+
+.knot.is-on {
+  color: var(--foam);
+}
+
+.knot.is-on .knot-dot {
+  border-color: var(--wake);
+  background: var(--wake);
+  box-shadow: var(--wake-dot-glow);
+}
+
+.hist-doc {
+  border: 1px solid var(--edge-soft);
+  background: var(--doc-surface);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.hist-doc-head {
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--edge-soft);
+}
+
+.crumbs {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--foam-faint);
+}
+
+.hist-title {
+  margin: 0.6rem 0 0.5rem;
+  font-size: clamp(1.35rem, 1.1rem + 1vw, 1.9rem);
+  font-weight: 300;
+  color: var(--foam);
+}
+
+.hist-stamp {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  color: var(--trace);
+}
+
+.hist-body {
+  margin: 1.75rem 0 0;
+}
+
+.ln {
+  display: grid;
+  grid-template-columns: 1.4rem 1fr;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0 0 0.7rem;
+  line-height: 1.7;
+}
+
+.ln-mark {
+  width: 7px;
+  height: 1px;
+  margin-top: 0.85em;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.ln-kept {
+  color: var(--foam);
+}
+
+.ln-added {
+  color: var(--amber);
+}
+
+.ln-added .ln-mark {
+  width: 7px;
+  height: 7px;
+  margin-top: 0.55em;
+  border-radius: 50%;
+  opacity: 1;
+  box-shadow: var(--amber-mark-glow);
+}
+
+.ln-cut {
+  color: var(--foam-cut);
+  text-decoration: line-through;
+  text-decoration-color: var(--foam-cut-line);
+  text-decoration-thickness: 1px;
+}
+
+.hist-note {
+  max-width: 46rem;
+  margin: 2rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--edge-soft);
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--foam-dim);
+}
+
+/* ---------- structure ---------- */
+
+/* this band hands the weight to the tree instead of the heading, so the page
+   does not open four sections the same way */
+#structure .section-head {
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.3rem);
+}
+
+#structure .lead {
+  max-width: 28rem;
+}
+
+.structure {
+  display: grid;
+  grid-template-columns: minmax(0, 34rem) minmax(0, 26rem);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+
+.twigs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.twigs-root > .branch + .branch {
+  margin-top: 0.35rem;
+}
+
+.branch .twigs {
+  margin-left: 0.72rem;
+  padding-left: 1.15rem;
+  border-left: 1px solid var(--edge-soft);
+}
+
+.twig {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 0;
+  font-size: 1.06rem;
+  color: var(--foam-dim);
+  transition: color 0.4s var(--ease);
+}
+
+.twig:hover {
+  color: var(--foam);
+}
+
+.branch.is-space > .twig {
+  color: var(--foam);
+  font-size: 1.3rem;
+  padding-block: 0.75rem;
+}
+
+.branch.is-space > .twig > svg {
+  color: var(--wake);
+}
+
+.twig-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--foam-faint);
+  cursor: pointer;
+  transition:
+    transform 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+
+.twig-toggle.is-open {
+  transform: rotate(90deg);
+  color: var(--trace);
+}
+
+.twig-toggle.is-leaf {
+  cursor: default;
+}
+
+.twig-name {
+  letter-spacing: -0.01em;
+}
+
+.twig-role {
+  margin-left: 0.35rem;
+  font-family: Jost, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--amber);
+  opacity: 0.9;
+}
+
+.branch.is-locked .twig {
+  color: var(--foam-note);
+}
+
+.twig-note {
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--foam-note);
+}
+
+.structure-note {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--foam-dim);
+  border-left: 1px solid var(--edge);
+  padding-left: 1.4rem;
+}
+
+/* ---------- finder ---------- */
+
+/* the search band opens loud and wide — the fourth distinct bar */
+#search .section-head {
+  font-size: clamp(2.2rem, 1.2rem + 4vw, 4.6rem);
+}
+
+.finder {
+  max-width: 58rem;
+}
+
+.finder-field {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.55rem 1.3rem;
+  border: 1px solid var(--edge);
+  background: var(--field-base);
+  color: var(--foam-faint);
+  transition:
+    box-shadow 0.5s var(--ease),
+    border-color 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+
+.finder-field:focus-within {
+  border-color: var(--wake);
+  color: var(--wake);
+  box-shadow: var(--finder-glow);
+}
+
+.finder-field input {
+  border: 0;
+  background: none;
+  padding-inline: 0;
+}
+
+.finder-field input:focus {
+  box-shadow: none;
+}
+
+.finder-list {
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+}
+
+.beam {
+  padding: 0.95rem 0 0.95rem 1.4rem;
+  border-left: 1px solid transparent;
+  transition:
+    border-color 0.6s var(--ease),
+    opacity 0.6s var(--ease);
+}
+
+.beam + .beam {
+  border-top: 1px solid var(--edge-soft);
+}
+
+/* dimmed with a tint from the plankton hue, never with opacity — the resting
+   state of this list is still body text and still has to clear 4.5:1 */
+.beam.is-dark .beam-text {
+  color: var(--foam-rest);
+}
+
+.beam.is-hit {
+  border-left-color: var(--wake);
+}
+
+.beam.is-hit .beam-text {
+  color: var(--foam);
+}
+
+.beam-text {
+  margin: 0;
+  line-height: 1.7;
+  color: var(--foam);
+}
+
+.beam-src {
+  margin: 0.45rem 0 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  color: var(--foam-faint);
+}
+
+.beam mark {
+  background: none;
+  color: var(--wake);
+  text-shadow: var(--mark-glow);
+}
+
+.finder-empty {
+  margin: 1.75rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--foam-dim);
+}
+
+.finder-empty-title {
+  display: block;
+  color: var(--foam);
+}
+
+.finder-note {
+  margin: 2rem 0 0;
+  font-size: 0.85rem;
+  color: var(--foam-faint);
+}
+
+/* ---------- close + foot ---------- */
+
+/* the page ends on its own axis — after four left-aligned bands, the close
+   turns to face the reader */
+.close {
+  padding-block: clamp(9rem, 22vh, 16rem) clamp(6rem, 12vh, 10rem);
+  text-align: center;
+}
+
+.close .section-head {
+  font-size: clamp(2.3rem, 1.2rem + 4.4vw, 4.8rem);
+  max-width: 16ch;
+  margin-inline: auto;
+}
+
+.close .lead {
+  margin-inline: auto;
+}
+
+.close-cta {
+  margin-top: clamp(2.25rem, 5vh, 3.5rem);
+}
+
+.close .waitlist,
+.close .waitlist-row,
+.close .waitlist-msg {
+  margin-inline: auto;
+}
+
+.close .waitlist-row {
+  justify-content: center;
+}
+
+.foot {
+  max-width: 78rem;
+  margin-inline: auto;
+  padding: 0 var(--gutter) 4rem;
+}
+
+.foot-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 3rem;
+  align-items: flex-start;
+  padding-top: 2rem;
+}
+
+.foot-row .brand {
+  color: var(--foam-faint);
+}
+
+.foot-note {
+  flex: 1 1 22rem;
+  max-width: 44rem;
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.8;
+  color: var(--foam-faint);
+}
+
+/* The paper landing needs no overrides of its own: every value above now
+   reads from a token that each theme defines once, in globals.css. */
+
+/* ---------- narrow ---------- */
+
+@media (max-width: 900px) {
+  .hist,
+  .structure {
+    grid-template-columns: 1fr;
+  }
+
+  /* the rail stays a vertical thread on narrow screens — a horizontal
+     card scroller would clip the dates and contradict the world */
+  .knot {
+    grid-template-areas:
+      "dot no meta"
+      ". summary summary";
+    padding-right: 0;
+  }
+
+  .knot-meta {
+    flex-wrap: wrap;
+    gap: 0.15rem 0.55rem;
+  }
+
+  .structure-note {
+    border-left: 0;
+    border-top: 1px solid var(--edge);
+    padding: 1.4rem 0 0;
+  }
+}
+
+@media (max-width: 620px) {
+  .nav-links {
+    gap: 1rem;
+    font-size: 0.72rem;
+  }
+
+  .brand {
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+  }
+
+  .waitlist-row .btn {
+    width: 100%;
+  }
+}

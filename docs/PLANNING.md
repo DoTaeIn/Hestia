@@ -1,7 +1,7 @@
-# Hestia — 사내 위키/문서 협업 플랫폼 기획서
+# Hestia — 문서 협업 SaaS
 
-> Confluence 형태의 문서 협업 시스템 구축을 위한 초기 기획 문서.
-> 상태: **기획 단계 (Draft)** · 최종 수정: 2026-08-08
+> 상태: **구현 진행 중** · 최종 수정: 2026-08-16
+> 이 문서는 다른 에이전트가 읽는 스펙이다. **코드와 어긋나면 코드가 옳다.** 어긋난 걸 발견하면 여기를 고친다.
 
 ---
 
@@ -9,209 +9,109 @@
 
 | 항목 | 내용 |
 | --- | --- |
-| 프로젝트명 | Hestia |
-| 목표 | 스페이스–페이지 계층 구조 기반의 문서 작성·공유·검색 플랫폼 |
+| 프로젝트명 | Hestia (저장소 폴더명은 `Confluence` 그대로) |
+| 형태 | **불특정 다수 대상 SaaS** — 외부 고객사가 직접 가입해 각자 워크스페이스를 만든다 (확정 2026-08-16). 사내 위키가 아니다 |
+| 목표 | 워크스페이스–페이지 계층 구조 기반의 문서 작성·공유·검색 플랫폼 |
 | 벤치마크 | Atlassian Confluence, Notion |
-| 범위 (1차) | MVP 5대 기능 (에디터 / 계층 구조 / 권한 / 버전 / 검색) |
-| 범위 제외 (1차) | 실시간 동시 편집(CRDT), 댓글 스레드, 매크로 플러그인 시스템 |
+| Positioning | **"왜"를 1급 시민으로** — [WHY.md](WHY.md) 참조 |
+
+### Positioning
+
+버전이 텍스트가 아니라 **이유**를 보존한다. 본문이 지워져도 왜 지웠는지는 남고, 그 이유는 검색되고 링크된다.
+Notion·Confluence의 가치 제안은 "마찰 없는 작성"이라 저장 시 이유를 묻는 선택을 구조적으로 못 한다.
+설계·단계·폐기 기준은 [WHY.md](WHY.md) 에 있다. **아직 미구현이다.**
 
 ---
 
-## 1. 필수 핵심 기능 (MVP)
+## 1. 실제 스택
 
-개발 착수 전 반드시 확정되어야 할 5가지 기능.
-
-### 1.1 리치 텍스트 에디터
-마크다운 입력, 표, 이미지 첨부가 가능한 문서 작성 도구.
-
-- 마크다운 단축 입력 (`#`, `-`, `>`, ` ``` ` 등)
-- 표 삽입 및 셀 병합
-- 이미지 드래그 앤 드롭 업로드 / 붙여넣기 업로드
-- 코드 블록 (문법 하이라이팅)
-- 문서 본문은 **구조화된 JSON(ProseMirror 문서 스키마)** 으로 저장하고, 검색 색인용 평문(plain text)을 별도 컬럼에 함께 보관
-
-### 1.2 계층형 문서 구조
-스페이스(프로젝트 단위)와 그 하위의 트리(Tree) 형태 페이지 구조.
-
-- 스페이스: 팀·프로젝트 단위의 최상위 컨테이너
-- 페이지: `parent_id` 를 통한 자기참조 트리, 무제한 depth
-- 형제 페이지 간 정렬 순서(`position`) 유지, 드래그로 이동/재정렬
-- 페이지 이동 시 하위 트리 전체가 함께 이동
-
-### 1.3 권한 관리 (RBAC)
-사용자·팀 단위로 읽기 / 쓰기 / 수정 권한 제어.
-
-| 역할 | 권한 |
+| 영역 | 실제 |
 | --- | --- |
-| Admin | 스페이스 설정, 권한 부여, 삭제 |
-| Editor | 페이지 생성·수정·삭제 |
-| Commenter | 읽기 + 댓글 (2차 범위) |
-| Viewer | 읽기 전용 |
+| 웹 | Next.js 15 App Router + React 19 (`app/`) |
+| 에디터 | TipTap 3 (`@tiptap/react`, starter-kit, table, image, placeholder) |
+| 동시 편집 | **Yjs + `@tiptap/extension-collaboration`** — Supabase Realtime 로 awareness/update 중계 |
+| 백엔드 | **Supabase** — Postgres + Auth + Storage + Realtime. 별도 API 서버 없음 |
+| 권한 | Postgres RLS + `security definer` RPC. 판정은 전부 DB 안에서 |
+| 파일 | Supabase Storage 버킷 `page-images` (RLS 정책으로 워크스페이스 격리) |
+| 스타일 | 순수 CSS (`globals.css`, `sections.css`, `tool.css`). Tailwind 없음 |
+| 상태 | React 내장. TanStack Query·Zustand 없음 |
 
-- 권한 부여 대상: 개인(User) 또는 팀(Group)
-- 기본 상속 단위는 **스페이스**, 페이지 단위 개별 오버라이드 허용
-- 권한 판정은 항상 서버(API 레이어)에서 수행 — 프론트엔드 숨김 처리는 UX 용도일 뿐 보안 경계가 아님
-
-### 1.4 버전 관리 (히스토리)
-누가 언제 문서를 수정했는지 기록하고 되돌리는 기능.
-
-- 저장 시마다 스냅샷 1건 생성 (`page_versions`)
-- 버전 목록: 수정자, 시각, 변경 요약
-- 두 버전 간 diff 보기
-- 특정 버전으로 복원 (복원 자체도 새 버전으로 기록 — 이력은 파괴하지 않음)
-- 스토리지 절감이 필요해지면 N번째마다 전체 스냅샷 + 그 사이는 델타 저장 방식으로 전환
-
-### 1.5 검색
-제목뿐 아니라 본문까지 찾아내는 풀텍스트 검색.
-
-- 제목 / 본문 / 첨부파일명 대상
-- 스페이스·작성자·기간 필터
-- 결과 하이라이팅 스니펫
-- **1차: PostgreSQL Full-Text Search 로 시작 → 데이터 증가 시 Elasticsearch 로 이관** (아래 6장 참고)
-- 한국어 형태소 분석 필요 (Nori / mecab-ko)
+**없는 것:** NestJS, S3, Redis, Elasticsearch, Tailwind, 편집 락.
+이전 판 기획서에 위 항목들이 적혀 있었으나 전부 채택되지 않았다.
 
 ---
 
-## 2. 프론트엔드
-
-복잡한 UI 상태(트리 구조, 에디터 상태)를 다뤄야 하므로 모던 프레임워크를 사용한다.
-
-| 영역 | 후보 | 권장 |
-| --- | --- | --- |
-| 웹 프레임워크 | React, Vue.js, Next.js | **Next.js** (App Router) — SEO·초기 로딩 속도 |
-| 에디터 | TipTap, Quill, Editor.js, CKEditor | **TipTap** — ProseMirror 기반, 커스터마이징 유연, 추후 Yjs 연동으로 동시 편집 확장 가능 |
-| UI 컴포넌트 | Tailwind CSS, MUI, Ant Design | **Tailwind CSS + shadcn/ui** |
-| 서버 상태 | TanStack Query | 캐싱·낙관적 업데이트 |
-| 클라이언트 상태 | Zustand | 트리 펼침 상태, 에디터 UI 상태 |
-
-**에디터 선택이 가장 되돌리기 어려운 결정이다.** 문서 저장 포맷이 에디터에 종속되므로, 착수 전 프로토타입으로 표·이미지·마크다운 입력을 반드시 검증할 것.
-
----
-
-## 3. 백엔드
-
-트래픽, 비즈니스 로직, 권한 검증을 처리하는 API 서버.
-
-### 3.1 서버 프레임워크
-
-| 언어 환경 | 후보 |
-| --- | --- |
-| Node.js | **NestJS** (구조화된 모듈·DI, 권장) / Express |
-| Python | Django / FastAPI |
-| Java·Kotlin | Spring Boot (엔터프라이즈에서 가장 널리 사용) |
-
-> 권장: 프론트와 언어를 통일할 수 있는 **NestJS**. 단, 팀이 이미 익숙한 스택이 있다면 그쪽을 우선한다.
-
-### 3.2 인증 및 보안
-- JWT 기반 로그인 유지 (Access Token 단기 + Refresh Token 회전)
-- Refresh Token 은 httpOnly·Secure 쿠키로 전달
-- OAuth 2.0 소셜 로그인 (Google / GitHub)
-- 모든 API 요청에서 리소스 단위 권한 재검증
-- 첨부파일은 S3 Pre-signed URL 로 접근 제어 (버킷 공개 금지)
-
-### 3.3 실시간 동시 편집 (선택 / 고급)
-여러 명이 동시에 편집하려면 WebSocket(Socket.io) 통신과 CRDT 또는 OT 알고리즘이 필요하다.
-
-- **1차 릴리스에서는 문서 잠금(Lock) 방식으로 대체한다.**
-  - 편집 진입 시 소프트 락 획득, TTL 만료 시 자동 해제
-  - 다른 사용자에게 "OOO님이 편집 중" 표시
-- 2차 확장: TipTap + **Yjs(CRDT)** + `y-websocket`
-  - TipTap 을 1차부터 선택하는 이유가 여기 있다 — 에디터 교체 없이 확장 가능
-
----
-
-## 4. 데이터베이스 및 스토리지
-
-| 구분 | 선택 | 용도 |
-| --- | --- | --- |
-| 메인 RDBMS | **PostgreSQL** | 사용자, 문서 메타데이터, 권한, 스페이스 구조, 버전 |
-| 검색 엔진 | **Elasticsearch** (2단계) | 방대한 텍스트 대상 풀텍스트 검색 |
-| 파일 저장소 | **AWS S3** (또는 호환 Object Storage) | 이미지·첨부파일 |
-| 캐시 | Redis | 세션, 권한 캐시, 편집 락 상태 |
-
-PostgreSQL 을 MySQL 보다 우선하는 이유: JSONB(에디터 문서 저장), 재귀 CTE(페이지 트리 조회), 내장 Full-Text Search 를 모두 갖춰 초기 단계에서 별도 컴포넌트 없이 출발할 수 있다.
-
-### 4.1 핵심 테이블 (초안)
+## 2. 데이터 모델 (실제 스키마)
 
 ```
-users            id, email, name, avatar_url, created_at
-teams            id, name
-team_members     team_id, user_id, role
-spaces           id, key, name, description, owner_id, created_at
-pages            id, space_id, parent_id, title, content(jsonb),
-                 content_text, position, status, created_by, updated_at
-page_versions    id, page_id, version_no, content(jsonb), summary,
-                 edited_by, created_at
-permissions      id, subject_type(user|team), subject_id,
-                 resource_type(space|page), resource_id, role
-attachments      id, page_id, filename, s3_key, size, mime, uploaded_by
+profiles            id, display_name, ...
+workspaces          id, name, ...
+workspace_members   workspace_id, user_id, role(owner|admin|editor|viewer)
+pages               id, workspace_id, parent_id, title, content(jsonb),
+                    position, created_by, updated_by, deleted_at, deleted_by
+page_revisions      id, page_id, workspace_id, version, title, content,
+                    created_by, created_at        ← 이유 칸이 없다 (WHY.md P0)
+page_collaboration  Yjs 문서 상태
+comments            0008
+notifications       0014
+storage.objects     버킷 page-images
 ```
 
----
+권한은 별도 `permissions` 테이블이 아니라 **워크스페이스 멤버십 역할 하나**로 판정한다.
+`is_workspace_member()` / `can_edit_workspace()` 두 함수를 모든 RLS 정책과 RPC가 공유한다.
+팀(Group) 테이블 없음. 페이지 단위 권한 오버라이드 없음.
 
-## 5. 시스템 구성도
+주요 RPC: `save_page_version`, `restore_page_revision`, `restore_page`,
+`invite_workspace_member`, `set_workspace_member_role`, `mark_notifications_read`.
 
-```
-[Browser]
-    │  HTTPS
-    ▼
-[Next.js]  ──REST/tRPC──▶  [API Server (NestJS)]
-                                │      │       │
-                                │      │       └──▶ [S3]   첨부파일
-                                │      └──────────▶ [Redis] 캐시·편집 락
-                                ▼
-                          [PostgreSQL]
-                                │  (2단계) 색인 동기화
-                                ▼
-                         [Elasticsearch]
-```
+마이그레이션은 `supabase/migrations/` 에 번호순으로 누적한다. 기존 파일을 고치지 않고 새 번호를 붙인다.
 
 ---
 
-## 6. 단계별 로드맵
+## 3. 현재 구현 상태
 
-### Phase 1 — 기반 (MVP 착수)
-- [ ] 인증: 이메일 가입/로그인, JWT 발급·갱신
-- [ ] 스페이스 CRUD
-- [ ] 페이지 CRUD + 트리 구조(생성·이동·정렬)
-- [ ] TipTap 에디터 연동 (마크다운·표·코드블록)
-- [ ] S3 이미지 업로드
-
-### Phase 2 — 핵심 완성
-- [ ] RBAC 권한 모델 및 API 레벨 검증
-- [ ] 팀(Group) 관리
-- [ ] 버전 저장·목록·diff·복원
-- [ ] 검색 v1 (PostgreSQL FTS + 한국어 형태소)
-- [ ] 편집 락 (동시 편집 충돌 방지)
-
-### Phase 3 — 확장
-- [ ] Elasticsearch 이관 및 색인 파이프라인
-- [ ] OAuth (Google / GitHub)
-- [ ] 댓글 / 멘션 / 알림
-- [ ] 실시간 동시 편집 (Yjs CRDT)
-- [ ] 페이지 템플릿, 즐겨찾기, 최근 방문
+- [x] 인증 (Supabase Auth, 이메일 + OAuth 콜백 `app/auth/callback`)
+- [x] 워크스페이스 생성·온보딩·초대·역할 변경
+- [x] 페이지 CRUD, `parent_id` 트리, `position` 정렬, 휴지통(soft delete + 복원)
+- [x] TipTap 에디터 (표·이미지·코드블록)
+- [x] 이미지 업로드 (Supabase Storage)
+- [x] 버전 저장·목록·복원
+- [x] 댓글, 알림
+- [x] 실시간 동시 편집 (Yjs)
+- [x] 검색 서버 이관 — pg_trgm GIN + `search_workspace` RPC (`0017`). 옛 구현은 모든 페이지를 브라우저로 보내 `includes()` 로 걸렀다
+- [x] 변경 이유 P0 ([WHY.md](WHY.md)) — `page_revisions.reason`, RPC `change_reason`, 이력 표시, 복원 시 입력
+- [x] 변경 이유 P1 — 제목 변경·문단 삭제 감지 시 묻기(건너뛰기 가능), 지난 판에 나중에 채우기
+- [x] 변경 이유 P2 — 이유가 검색 대상, 문서마다 "이 문서가 지금 모습이 된 이유들"
+- [x] `0015`~`0018` 로컬 적용·검증 (2026-08-16) — RLS 누수 없음, `%` 이스케이프 동작, trigram 인덱스 사용 확인
+- [x] **테넌트 격리 구멍 하나 막음** (`0018`) — `profiles` 가 `using (true)` 라 로그인한 누구나 전체 사용자 목록(= 이메일)을 읽었다. 사내 위키였을 땐 맞는 정책, SaaS 가 되면서 누수
+- [ ] 원격 Supabase 프로젝트 link + 적용 — `supabase/.temp` 에 project-ref 가 없어 `db push` 는 아직 대상이 없다
 
 ---
 
-## 7. 확정 필요 사항 (Open Questions)
+## 4. 다음 할 일
 
-착수 전 결정해야 할 항목들.
-
-1. **백엔드 언어** — 팀 숙련도 기준으로 NestJS / Spring Boot / FastAPI 중 확정
-2. **배포 환경** — AWS / GCP / 온프레미스 중 어디인가 (S3 대체재 여부에 영향)
-3. **사용자 규모** — 예상 인원과 문서 수. Elasticsearch 도입 시점을 좌우
-4. **인증 주체** — 자체 가입인가, 사내 SSO(SAML/OIDC) 연동인가
-5. **동시 편집 우선순위** — 1차 릴리스에 필수인가, 락으로 충분한가
-6. **문서 저장 포맷** — ProseMirror JSON 고정 여부 (에디터 교체 비용과 직결)
+1. 앱을 띄워 이유 흐름을 손으로 한 번 통과 — 저장 시 모달, 복원 시 입력, 이력에서 나중에 채우기, 검색에서 "변경 이유" 결과
+2. 원격 Supabase 프로젝트 link 후 마이그레이션 적용 (사람이 승인할 일)
+3. **폐기 기준 측정** — 실사용 2주 뒤 이유 입력률. [WHY.md](WHY.md) §4
 
 ---
 
-## 8. 기술적 리스크
+## 5. 미정 (사람이 정한다)
+
+- 과금 **숫자** — 무료 한도 N 명, 시트 단가, 플랜 이름. 모델은 확정([PRODUCT.md](../PRODUCT.md) 테넌시와 과금), 숫자만 미정
+- 셀프서브 온보딩 — 워크스페이스 생성은 되지만 **팀원 초대가 막혀 있다**. `invite_workspace_member` 가 이미 가입한 이메일만 받아서 "초대하고 시작"이 불가능하다
+- 배포 환경 — [DEPLOYMENT.md](DEPLOYMENT.md) 참조
+- 한국어 검색 형태소 분석 도입 여부 — **더 이상 막고 있지 않다.** pg_trgm 이 조사 붙은 말도 찾는다. 관련도 순위가 필요해지면 그때 결정한다 ([WHY.md](WHY.md) 검색 이관 항목)
+
+---
+
+## 6. 기술적 리스크
 
 | 리스크 | 영향 | 대응 |
 | --- | --- | --- |
-| 에디터 종속성 | 높음 | 문서 저장 포맷을 표준 JSON 으로 유지, 변환 레이어 분리 |
-| 권한 검증 누락 | 높음 | API 레벨 가드 일원화, 권한 테스트 케이스 필수화 |
-| 트리 조회 성능 | 중간 | 재귀 CTE + 스페이스 단위 캐싱 |
-| 검색 색인 동기화 | 중간 | Outbox 패턴으로 비동기 색인, 실패 시 재처리 |
-| 버전 스토리지 증가 | 중간 | 델타 저장 전환, 오래된 버전 보관 정책 수립 |
+| 검색 SQL 미검증 | 높음 | `db push` 후 §4의 2번을 실제로 확인. 특히 RLS 누수 |
+| 검색 관련도 순위 없음 | 중간 | trigram 의 대가. 문서가 많아져 순위가 필요해지면 형태소 분석기 + tsvector |
+| 에디터 종속성 | 높음 | 본문은 ProseMirror JSON. 변환 레이어를 분리해 둘 것 |
+| 권한 검증 누락 | 높음 | RLS 를 유일한 경계로 유지. 클라이언트 숨김은 UX 용도일 뿐 |
+| 이유 입력 마찰 | 높음 | WHY.md §4 의 폐기 기준 |
+| 버전 스토리지 증가 | 중간 | 델타 저장 전환, 보관 정책 |

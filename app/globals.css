@@ -1,0 +1,508 @@
+@import url("https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/variable/woff2/SUIT-Variable.css");
+@import url("https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap");
+
+:root {
+  /* paper — default reading surface for the product and landing */
+  --abyss: #f7fafc;
+  --deep: #edf5f8;
+  --current: #e4f0f5;
+  --shelf: #d4e7ee;
+
+  /* living light — what is happening now */
+  --plankton: #1674a0;
+  --wake: #006f8e;
+  --trace: #0a6a86;
+
+  /* kept light — what Hestia refuses to let go */
+  --amber: #9a5708;
+  --amber-deep: #75410a;
+
+  /* ink */
+  --foam: #10202a;
+  --foam-dim: #435b6a;
+  --foam-faint: #607887;
+
+  --edge: rgba(10, 106, 134, 0.25);
+  --edge-soft: rgba(10, 106, 134, 0.12);
+
+  /* control surfaces — the opaque base the canvas must not bleed through,
+     and the wash/lift each theme uses to say "you are touching this" */
+  --control-base: rgba(255, 255, 255, 0.9);
+  --control-wash: rgba(0, 111, 142, 0.1);
+  --control-wash-amber: rgba(154, 87, 8, 0.09);
+  --control-lift: 0 10px 20px rgba(10, 106, 134, 0.1);
+  --control-lift-amber: 0 10px 20px rgba(154, 87, 8, 0.1);
+  --rim-mute: rgba(96, 120, 135, 0.35);
+  --field-base: rgba(255, 255, 255, 0.88);
+  --field-glow: 0 8px 18px rgba(0, 111, 142, 0.12);
+
+  /* the veil under the fixed nav */
+  --scrim: rgba(247, 250, 252, 0.96);
+  --scrim-fade: rgba(247, 250, 252, 0);
+
+  /* daylight — the paper world's replacement for the canvas glow.
+     On dark these are transparent: the wake itself lights the page. */
+  --daylight-cool: rgba(169, 222, 237, 0.46);
+  --daylight-warm: rgba(248, 211, 155, 0.23);
+
+  --alarm: #b3261e;
+
+  /* section surfaces and marks — paper has no glow, so these carry the same
+     meaning with fill and elevation instead */
+  --doc-surface: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.9),
+    rgba(228, 240, 245, 0.78)
+  );
+  --amber-dot: rgba(154, 87, 8, 0.16);
+  --wake-dot-glow: 0 0 0.75rem rgba(0, 111, 142, 0.34);
+  --amber-mark-glow: 0 0 0.55rem rgba(154, 87, 8, 0.38);
+  --finder-glow: 0 8px 18px rgba(0, 111, 142, 0.12);
+  --mark-glow: 0 0 0.7rem rgba(0, 111, 142, 0.28);
+  --hero-glow-now: none;
+  --hero-glow-kept: none;
+  /* the live end of the version rail's thread, where amber cools into now */
+  --rail-live: rgba(10, 106, 134, 0.35);
+
+  /* the two dimmed reading states, tinted rather than faded */
+  --foam-cut: #627b89;
+  --foam-cut-line: rgba(98, 123, 137, 0.55);
+  --foam-rest: #526c7a;
+  --foam-note: #607887;
+
+  --measure: 34rem;
+  --gutter: clamp(1.25rem, 5vw, 6rem);
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  --abyss: #05070b;
+  --deep: #081222;
+  --current: #0d2138;
+  --shelf: #12304d;
+  --plankton: #1e90ff;
+  --wake: #00e5ff;
+  --trace: #4bd6ff;
+  --amber: #f5a83c;
+  --amber-deep: #b76f18;
+  --foam: #d6e8f5;
+  --foam-dim: #9dbcd2;
+  --foam-faint: #86a7be;
+  --edge: rgba(75, 214, 255, 0.22);
+  --edge-soft: rgba(75, 214, 255, 0.1);
+
+  --control-base: rgba(7, 13, 22, 0.94);
+  --control-wash: rgba(0, 229, 255, 0.12);
+  --control-wash-amber: rgba(245, 168, 60, 0.14);
+  --control-lift:
+    0 0 1.5rem rgba(0, 229, 255, 0.35),
+    inset 0 0 2rem rgba(0, 229, 255, 0.12);
+  --control-lift-amber:
+    0 0 1.5rem rgba(245, 168, 60, 0.32),
+    inset 0 0 2rem rgba(245, 168, 60, 0.1);
+  --rim-mute: rgba(125, 160, 185, 0.35);
+  --field-base: rgba(7, 15, 28, 0.93);
+  --field-glow: 0 0 1.2rem rgba(0, 229, 255, 0.25);
+
+  --scrim: rgba(5, 7, 11, 0.96);
+  --scrim-fade: rgba(5, 7, 11, 0);
+
+  /* the canvas does this job on dark, so the paper glow stands down */
+  --daylight-cool: transparent;
+  --daylight-warm: transparent;
+
+  --alarm: #ff9a86;
+
+  --doc-surface: linear-gradient(
+    to bottom,
+    rgba(13, 33, 56, 0.55),
+    rgba(8, 18, 34, 0.4)
+  );
+  --amber-dot: rgba(245, 168, 60, 0.28);
+  --wake-dot-glow: 0 0 0.9rem rgba(0, 229, 255, 0.75);
+  --amber-mark-glow: 0 0 0.7rem rgba(245, 168, 60, 0.6);
+  --finder-glow: 0 0 1.4rem rgba(0, 229, 255, 0.22);
+  --mark-glow: 0 0 0.85rem rgba(0, 229, 255, 0.75);
+  --hero-glow-now: 0 0 2.5rem rgba(0, 229, 255, 0.18);
+  --hero-glow-kept: 0 0 2.5rem rgba(245, 168, 60, 0.28);
+  --rail-live: rgba(75, 214, 255, 0.35);
+
+  --foam-cut: rgba(125, 176, 205, 0.62);
+  --foam-cut-line: rgba(125, 176, 205, 0.45);
+  --foam-rest: #7f9fb6;
+  --foam-note: #8fafc6;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--abyss);
+  color: var(--foam);
+  font-family: "SUIT Variable", Jost, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.0625rem);
+  line-height: 1.75;
+  letter-spacing: -0.01em;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* the sea sits behind everything, always */
+.sea {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.shell {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- type ---------- */
+
+h1,
+h2,
+h3 {
+  font-weight: 250;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.display {
+  font-size: clamp(2.6rem, 1.2rem + 6vw, 6rem);
+}
+
+.section-head {
+  font-size: clamp(1.9rem, 1.1rem + 3.2vw, 3.6rem);
+}
+
+.lead {
+  max-width: var(--measure);
+  color: var(--foam-dim);
+  font-weight: 350;
+  font-size: clamp(1rem, 0.95rem + 0.35vw, 1.2rem);
+  line-height: 1.7;
+}
+
+.kept {
+  color: var(--amber);
+}
+
+.lit {
+  color: var(--wake);
+}
+
+.latin {
+  font-family: Jost, sans-serif;
+  font-weight: 300;
+}
+
+/* ---------- rhythm ---------- */
+
+section {
+  padding-inline: var(--gutter);
+}
+
+.band {
+  padding-block: clamp(7rem, 14vh, 12rem) clamp(4rem, 8vh, 7rem);
+  max-width: 78rem;
+  margin-inline: auto;
+}
+
+.band > .lead {
+  margin-top: 1.5rem;
+}
+
+.band-body {
+  margin-top: clamp(3rem, 6vh, 5rem);
+}
+
+/* ---------- nav ---------- */
+
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 4vw, 3rem);
+  padding: 1.1rem var(--gutter);
+}
+
+/* the veil is a layer of its own so it can fade out without taking the
+   nav's own text with it */
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom, var(--scrim) 40%, var(--scrim-fade));
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+
+.brand-mark {
+  display: block;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: Jost, sans-serif;
+  font-weight: 300;
+  font-size: 0.95rem;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: var(--foam);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: clamp(1rem, 2.5vw, 2.2rem);
+  margin-left: auto;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+}
+
+.nav-links a {
+  color: var(--foam-faint);
+  text-decoration: none;
+  transition: color 0.4s var(--ease);
+}
+
+.nav-links a:hover {
+  color: var(--wake);
+}
+
+.landing-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--edge);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--foam-faint);
+  cursor: pointer;
+  transition: color 0.4s var(--ease), border-color 0.4s var(--ease), background 0.4s var(--ease);
+}
+
+.landing-theme-toggle:hover { color: var(--wake); border-color: var(--wake); }
+
+/* ---------- controls ---------- */
+
+.btn {
+  --glow: var(--wake);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 0.85rem 1.6rem;
+  border: 1px solid var(--glow);
+  border-radius: 2px;
+  /* an opaque base, and no fill tint: the control is dark and defined by its
+     lit rim, not by a coloured slab. Without the opaque base the wake behind
+     the page bleeds through and the button reads a different colour at every
+     scroll position. */
+  background: var(--control-base);
+  color: var(--foam);
+  font: inherit;
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  isolation: isolate;
+  box-shadow: none;
+  transition:
+    box-shadow 0.5s var(--ease),
+    background 0.5s var(--ease),
+    color 0.5s var(--ease);
+}
+
+/* Touching the control disturbs the water inside it. Authored dot field,
+   masked and tinted by the button's own glow — the same plankton the canvas
+   ignites, not a gradient sheen. */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--glow);
+  opacity: 0;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 50'%3E%3Cg fill='%23fff'%3E%3Ccircle cx='9' cy='33' r='1.7' opacity='.9'/%3E%3Ccircle cx='18' cy='14' r='1' opacity='.6'/%3E%3Ccircle cx='27' cy='40' r='.8' opacity='.5'/%3E%3Ccircle cx='34' cy='22' r='1.9' opacity='.85'/%3E%3Ccircle cx='45' cy='8' r='1.1' opacity='.55'/%3E%3Ccircle cx='52' cy='36' r='1.4' opacity='.75'/%3E%3Ccircle cx='61' cy='19' r='.9' opacity='.5'/%3E%3Ccircle cx='69' cy='44' r='1.6' opacity='.8'/%3E%3Ccircle cx='77' cy='11' r='1.2' opacity='.65'/%3E%3Ccircle cx='84' cy='29' r='2' opacity='.9'/%3E%3Ccircle cx='93' cy='6' r='.8' opacity='.45'/%3E%3Ccircle cx='101' cy='38' r='1.3' opacity='.7'/%3E%3Ccircle cx='110' cy='17' r='1.7' opacity='.85'/%3E%3Ccircle cx='118' cy='45' r='.9' opacity='.5'/%3E%3Ccircle cx='126' cy='25' r='1.5' opacity='.78'/%3E%3Ccircle cx='135' cy='9' r='1.1' opacity='.6'/%3E%3Ccircle cx='143' cy='34' r='1.8' opacity='.88'/%3E%3Ccircle cx='152' cy='20' r='.85' opacity='.5'/%3E%3Ccircle cx='160' cy='42' r='1.2' opacity='.68'/%3E%3Ccircle cx='168' cy='13' r='1.6' opacity='.8'/%3E%3Ccircle cx='177' cy='31' r='1' opacity='.55'/%3E%3Ccircle cx='185' cy='7' r='1.4' opacity='.72'/%3E%3Ccircle cx='192' cy='39' r='1.9' opacity='.9'/%3E%3Ccircle cx='6' cy='18' r='1.2' opacity='.62'/%3E%3Ccircle cx='40' cy='47' r='1' opacity='.5'/%3E%3Ccircle cx='73' cy='27' r='1.3' opacity='.7'/%3E%3Ccircle cx='107' cy='48' r='1.1' opacity='.58'/%3E%3Ccircle cx='140' cy='16' r='.9' opacity='.5'/%3E%3Ccircle cx='174' cy='24' r='1.7' opacity='.82'/%3E%3Ccircle cx='198' cy='15' r='1' opacity='.55'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 50'%3E%3Cg fill='%23fff'%3E%3Ccircle cx='9' cy='33' r='1.7' opacity='.9'/%3E%3Ccircle cx='18' cy='14' r='1' opacity='.6'/%3E%3Ccircle cx='27' cy='40' r='.8' opacity='.5'/%3E%3Ccircle cx='34' cy='22' r='1.9' opacity='.85'/%3E%3Ccircle cx='45' cy='8' r='1.1' opacity='.55'/%3E%3Ccircle cx='52' cy='36' r='1.4' opacity='.75'/%3E%3Ccircle cx='61' cy='19' r='.9' opacity='.5'/%3E%3Ccircle cx='69' cy='44' r='1.6' opacity='.8'/%3E%3Ccircle cx='77' cy='11' r='1.2' opacity='.65'/%3E%3Ccircle cx='84' cy='29' r='2' opacity='.9'/%3E%3Ccircle cx='93' cy='6' r='.8' opacity='.45'/%3E%3Ccircle cx='101' cy='38' r='1.3' opacity='.7'/%3E%3Ccircle cx='110' cy='17' r='1.7' opacity='.85'/%3E%3Ccircle cx='118' cy='45' r='.9' opacity='.5'/%3E%3Ccircle cx='126' cy='25' r='1.5' opacity='.78'/%3E%3Ccircle cx='135' cy='9' r='1.1' opacity='.6'/%3E%3Ccircle cx='143' cy='34' r='1.8' opacity='.88'/%3E%3Ccircle cx='152' cy='20' r='.85' opacity='.5'/%3E%3Ccircle cx='160' cy='42' r='1.2' opacity='.68'/%3E%3Ccircle cx='168' cy='13' r='1.6' opacity='.8'/%3E%3Ccircle cx='177' cy='31' r='1' opacity='.55'/%3E%3Ccircle cx='185' cy='7' r='1.4' opacity='.72'/%3E%3Ccircle cx='192' cy='39' r='1.9' opacity='.9'/%3E%3Ccircle cx='6' cy='18' r='1.2' opacity='.62'/%3E%3Ccircle cx='40' cy='47' r='1' opacity='.5'/%3E%3Ccircle cx='73' cy='27' r='1.3' opacity='.7'/%3E%3Ccircle cx='107' cy='48' r='1.1' opacity='.58'/%3E%3Ccircle cx='140' cy='16' r='.9' opacity='.5'/%3E%3Ccircle cx='174' cy='24' r='1.7' opacity='.82'/%3E%3Ccircle cx='198' cy='15' r='1' opacity='.55'/%3E%3C/g%3E%3C/svg%3E");
+  mask-size: 220% 130%;
+  -webkit-mask-size: 220% 130%;
+  transition: opacity 0.6s var(--ease);
+}
+
+.btn:hover:not(:disabled)::before,
+.btn:focus-visible::before {
+  opacity: 0.8;
+  animation: plankton-drift 11s linear infinite;
+}
+
+@keyframes plankton-drift {
+  from {
+    mask-position: 0% 50%;
+    -webkit-mask-position: 0% 50%;
+  }
+  to {
+    mask-position: 120% 50%;
+    -webkit-mask-position: 120% 50%;
+  }
+}
+
+.btn:hover:not(:disabled) {
+  background:
+    linear-gradient(var(--control-wash), var(--control-wash)),
+    var(--control-base);
+  box-shadow: var(--control-lift);
+}
+
+.btn:disabled {
+  --glow: var(--rim-mute);
+  color: var(--foam-faint);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+.btn-amber {
+  --glow: var(--amber);
+}
+
+.btn-amber:hover:not(:disabled) {
+  background:
+    linear-gradient(var(--control-wash-amber), var(--control-wash-amber)),
+    var(--control-base);
+  box-shadow: var(--control-lift-amber);
+}
+
+.btn-ghost {
+  border-color: var(--edge);
+  background: transparent;
+}
+
+.shell input[type="email"],
+.shell input[type="text"] {
+  width: 100%;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid var(--edge);
+  border-radius: 2px;
+  background: var(--field-base);
+  color: var(--foam);
+  font: inherit;
+  font-size: 0.95rem;
+  letter-spacing: 0;
+  transition:
+    border-color 0.4s var(--ease),
+    box-shadow 0.5s var(--ease);
+}
+
+.shell input::placeholder {
+  color: var(--foam-faint);
+}
+
+.shell input:focus {
+  outline: none;
+  border-color: var(--wake);
+  box-shadow: var(--field-glow);
+}
+
+.shell :focus-visible {
+  outline: 2px solid var(--wake);
+  outline-offset: 3px;
+}
+
+/* ---------- shared surfaces ---------- */
+
+.rule {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(to right, var(--edge), transparent);
+  margin: 0;
+}
+
+.label {
+  font-family: Jost, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--foam-faint);
+}
+
+.synthetic {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--foam-faint);
+}
+
+.synthetic::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--amber-deep);
+}
+
+/* ---------- paper landing ---------- */
+
+[data-theme="light"] .sea { display: none; }
+
+[data-theme="light"] .shell { isolation: isolate; }
+
+/* the only light-only rule left: the canvas is gone, so the paper needs its
+   own atmosphere. Everything else now comes from the tokens above. */
+[data-theme="light"] .shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(70rem 42rem at 92% 18%, var(--daylight-cool), transparent 66%),
+    radial-gradient(50rem 36rem at 77% 88%, var(--daylight-warm), transparent 68%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,829 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-12T18:08:30.285Z",
+  "title": "Design System: Hestia",
+  "extensions": {
+    "colorMeta": {
+      "abyss": {
+        "role": "neutral",
+        "displayName": "Abyss",
+        "canonical": "#05070b",
+        "tonalRamp": [
+          "#05070b",
+          "#0a0f18",
+          "#111a28",
+          "#1c2a3d",
+          "#2c3f57",
+          "#475d78",
+          "#71879f",
+          "#a8b8c8"
+        ]
+      },
+      "deep": {
+        "role": "neutral",
+        "displayName": "Deep Water",
+        "canonical": "#081222",
+        "tonalRamp": [
+          "#040911",
+          "#081222",
+          "#0e1e37",
+          "#16304f",
+          "#22456c",
+          "#365f8c",
+          "#5a83ae",
+          "#95b3d0"
+        ]
+      },
+      "current": {
+        "role": "neutral",
+        "displayName": "The Current",
+        "canonical": "#0d2138",
+        "tonalRamp": [
+          "#06101c",
+          "#0d2138",
+          "#133251",
+          "#1c476d",
+          "#28608c",
+          "#3d7fae",
+          "#66a3cb",
+          "#a2c9e2"
+        ]
+      },
+      "shelf": {
+        "role": "neutral",
+        "displayName": "The Shelf",
+        "canonical": "#12304d",
+        "tonalRamp": [
+          "#081827",
+          "#12304d",
+          "#1a4470",
+          "#245c94",
+          "#3178b6",
+          "#4c96cf",
+          "#79b6e0",
+          "#b0d5ee"
+        ]
+      },
+      "plankton": {
+        "role": "primary",
+        "displayName": "Plankton Blue",
+        "canonical": "#1e90ff",
+        "tonalRamp": [
+          "#03203f",
+          "#053764",
+          "#084f8e",
+          "#0d69b8",
+          "#137cd8",
+          "#1e90ff",
+          "#61b0ff",
+          "#a8d2ff"
+        ]
+      },
+      "wake": {
+        "role": "primary",
+        "displayName": "Wake Cyan",
+        "canonical": "#00e5ff",
+        "tonalRamp": [
+          "#002229",
+          "#003a44",
+          "#005362",
+          "#006f84",
+          "#008ea8",
+          "#00b2d1",
+          "#00e5ff",
+          "#9df1ff"
+        ]
+      },
+      "trace": {
+        "role": "primary",
+        "displayName": "Trace Cyan",
+        "canonical": "#4bd6ff",
+        "tonalRamp": [
+          "#062330",
+          "#0a3a4d",
+          "#0f526d",
+          "#166f90",
+          "#1f8fb6",
+          "#2fb3dd",
+          "#4bd6ff",
+          "#a7ebff"
+        ]
+      },
+      "amber": {
+        "role": "secondary",
+        "displayName": "Harbor Amber",
+        "canonical": "#f5a83c",
+        "tonalRamp": [
+          "#2b1a03",
+          "#472c06",
+          "#66400a",
+          "#88570f",
+          "#ac6f15",
+          "#d18b1f",
+          "#f5a83c",
+          "#fbd39b"
+        ]
+      },
+      "amber-deep": {
+        "role": "secondary",
+        "displayName": "Deep Amber",
+        "canonical": "#b76f18",
+        "tonalRamp": [
+          "#231303",
+          "#3b2105",
+          "#553008",
+          "#71410b",
+          "#8f540f",
+          "#b76f18",
+          "#dc9235",
+          "#f2c489"
+        ]
+      },
+      "foam": {
+        "role": "neutral",
+        "displayName": "Foam",
+        "canonical": "#d6e8f5",
+        "tonalRamp": [
+          "#1b2b36",
+          "#2c4453",
+          "#3f5e72",
+          "#547a92",
+          "#6e97af",
+          "#92b5c9",
+          "#b8d1e2",
+          "#d6e8f5"
+        ]
+      },
+      "foam-dim": {
+        "role": "neutral",
+        "displayName": "Dim Foam",
+        "canonical": "#9dbcd2",
+        "tonalRamp": [
+          "#16242e",
+          "#243a48",
+          "#345063",
+          "#466880",
+          "#5b829d",
+          "#7a9eb9",
+          "#9dbcd2",
+          "#c8dced"
+        ]
+      },
+      "foam-faint": {
+        "role": "neutral",
+        "displayName": "Faint Foam",
+        "canonical": "#86a7be",
+        "tonalRamp": [
+          "#121e26",
+          "#1f303c",
+          "#2d4454",
+          "#3d5a6f",
+          "#50748c",
+          "#6a8ea8",
+          "#86a7be",
+          "#b6cddd"
+        ]
+      },
+      "foam-cut": {
+        "role": "neutral",
+        "displayName": "Struck Foam",
+        "canonical": "rgba(125, 176, 205, 0.62)",
+        "tonalRamp": [
+          "#16242c",
+          "#233a46",
+          "#325062",
+          "#446a80",
+          "#57869e",
+          "#6f9fb8",
+          "#7db0cd",
+          "#b4d3e4"
+        ]
+      },
+      "foam-rest": {
+        "role": "neutral",
+        "displayName": "Resting Foam",
+        "canonical": "#7f9fb6",
+        "tonalRamp": [
+          "#111c23",
+          "#1d2e39",
+          "#2a4250",
+          "#3a5a6c",
+          "#4d7387",
+          "#658fa5",
+          "#7f9fb6",
+          "#b2cbda"
+        ]
+      },
+      "edge": {
+        "role": "neutral",
+        "displayName": "Lit Edge",
+        "canonical": "rgba(75, 214, 255, 0.22)",
+        "tonalRamp": [
+          "#062330",
+          "#0a3a4d",
+          "#0f526d",
+          "#166f90",
+          "#1f8fb6",
+          "#2fb3dd",
+          "#4bd6ff",
+          "#a7ebff"
+        ]
+      },
+      "edge-soft": {
+        "role": "neutral",
+        "displayName": "Soft Edge",
+        "canonical": "rgba(75, 214, 255, 0.1)",
+        "tonalRamp": [
+          "#062330",
+          "#0a3a4d",
+          "#0f526d",
+          "#166f90",
+          "#1f8fb6",
+          "#2fb3dd",
+          "#4bd6ff",
+          "#a7ebff"
+        ]
+      },
+      "control-base": {
+        "role": "neutral",
+        "displayName": "Control Base",
+        "canonical": "rgba(7, 13, 22, 0.94)",
+        "tonalRamp": [
+          "#070d16",
+          "#0d1927",
+          "#152740",
+          "#1f3a5c",
+          "#2d517d",
+          "#436d9d",
+          "#688fbb",
+          "#a2bcd8"
+        ]
+      },
+      "field-base": {
+        "role": "neutral",
+        "displayName": "Field Base",
+        "canonical": "rgba(7, 15, 28, 0.93)",
+        "tonalRamp": [
+          "#070f1c",
+          "#0c1a30",
+          "#132a4b",
+          "#1c3d68",
+          "#295489",
+          "#3d72aa",
+          "#6494c8",
+          "#a0bedb"
+        ]
+      },
+      "alarm-foam": {
+        "role": "tertiary",
+        "displayName": "Alarm Foam",
+        "canonical": "#ff9a86",
+        "tonalRamp": [
+          "#38130c",
+          "#552016",
+          "#742f22",
+          "#96412f",
+          "#b95740",
+          "#dc7159",
+          "#ff9a86",
+          "#ffcabd"
+        ]
+      },
+      "paper-abyss": {
+        "role": "neutral",
+        "displayName": "Paper Ground",
+        "canonical": "#f7fafc",
+        "tonalRamp": [
+          "#152a38",
+          "#244860",
+          "#336789",
+          "#4386b2",
+          "#6ba2c7",
+          "#97bed8",
+          "#c4dae9",
+          "#e9f1f7"
+        ]
+      },
+      "paper-deep": {
+        "role": "neutral",
+        "displayName": "Paper Deep",
+        "canonical": "#edf5f8",
+        "tonalRamp": [
+          "#152e37",
+          "#25505f",
+          "#357188",
+          "#4593b0",
+          "#6cadc6",
+          "#98c6d7",
+          "#c4dee8",
+          "#e9f3f6"
+        ]
+      },
+      "paper-current": {
+        "role": "neutral",
+        "displayName": "Paper Current",
+        "canonical": "#e4f0f5",
+        "tonalRamp": [
+          "#152d38",
+          "#244f61",
+          "#33708a",
+          "#4292b3",
+          "#6aacc8",
+          "#97c5d8",
+          "#c3dee9",
+          "#e9f3f7"
+        ]
+      },
+      "paper-shelf": {
+        "role": "neutral",
+        "displayName": "Paper Shelf",
+        "canonical": "#d4e7ee",
+        "tonalRamp": [
+          "#162e37",
+          "#26505f",
+          "#357187",
+          "#4593af",
+          "#6dadc5",
+          "#99c6d7",
+          "#c5dee8",
+          "#e9f3f6"
+        ]
+      },
+      "paper-plankton": {
+        "role": "primary",
+        "displayName": "Daylight Plankton",
+        "canonical": "#1674a0",
+        "tonalRamp": [
+          "#093143",
+          "#105575",
+          "#1778a6",
+          "#1e9cd7",
+          "#4cb5e6",
+          "#81cbee",
+          "#b7e1f5",
+          "#e4f4fb"
+        ]
+      },
+      "paper-wake": {
+        "role": "primary",
+        "displayName": "Daylight Wake",
+        "canonical": "#006f8e",
+        "tonalRamp": [
+          "#003c4d",
+          "#006885",
+          "#0094bd",
+          "#00bff5",
+          "#33d2ff",
+          "#70e0ff",
+          "#adedff",
+          "#e0f8ff"
+        ]
+      },
+      "paper-trace": {
+        "role": "primary",
+        "displayName": "Daylight Trace",
+        "canonical": "#0a6a86",
+        "tonalRamp": [
+          "#053847",
+          "#09627b",
+          "#0d8bb0",
+          "#11b4e4",
+          "#41c9f1",
+          "#7ad9f5",
+          "#b3e9f9",
+          "#e3f7fd"
+        ]
+      },
+      "paper-amber": {
+        "role": "secondary",
+        "displayName": "Burnt Ochre",
+        "canonical": "#9a5708",
+        "tonalRamp": [
+          "#492904",
+          "#7e4707",
+          "#b36509",
+          "#e9830c",
+          "#f5a13d",
+          "#f8bd77",
+          "#fbd9b1",
+          "#fdf1e2"
+        ]
+      },
+      "paper-amber-deep": {
+        "role": "secondary",
+        "displayName": "Deep Ochre",
+        "canonical": "#75410a",
+        "tonalRamp": [
+          "#462706",
+          "#7a440a",
+          "#ae610f",
+          "#e27d13",
+          "#ef9b43",
+          "#f4b97b",
+          "#f9d7b4",
+          "#fdf0e3"
+        ]
+      },
+      "paper-foam": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#10202a",
+        "tonalRamp": [
+          "#152a37",
+          "#254960",
+          "#346889",
+          "#4487b1",
+          "#6ba4c7",
+          "#98bfd8",
+          "#c4dae8",
+          "#e9f1f7"
+        ]
+      },
+      "paper-foam-dim": {
+        "role": "neutral",
+        "displayName": "Ink Dim",
+        "canonical": "#435b6a",
+        "tonalRamp": [
+          "#1e282f",
+          "#334651",
+          "#496374",
+          "#5f8196",
+          "#829eb0",
+          "#a8bbc8",
+          "#cdd8df",
+          "#ecf0f3"
+        ]
+      },
+      "paper-foam-faint": {
+        "role": "neutral",
+        "displayName": "Ink Faint",
+        "canonical": "#607887",
+        "tonalRamp": [
+          "#20282d",
+          "#37454d",
+          "#4e626e",
+          "#667f8f",
+          "#889daa",
+          "#acbac4",
+          "#cfd8dd",
+          "#edf0f2"
+        ]
+      },
+      "paper-alarm": {
+        "role": "tertiary",
+        "displayName": "Alarm Red",
+        "canonical": "#b3261e",
+        "tonalRamp": [
+          "#420e0b",
+          "#721813",
+          "#a2221b",
+          "#d22d23",
+          "#e25850",
+          "#eb8a85",
+          "#f3bcb9",
+          "#fbe6e5"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headline only. Two lines, capped at 20ch, with a cyan bloom and an amber bloom on the kept half."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section openings. Size is deliberately varied band to band so no two consecutive sections open the same way."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "The demonstrated document's title inside the history surface."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "The paragraph under every section heading, measured at 34rem."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All remaining prose, notes, and result text."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "The only uppercase in the system: Jost at 0.72rem with +0.24em tracking."
+      },
+      "brand": {
+        "displayName": "Brand",
+        "purpose": "The HESTIA wordmark. Jost 300 at +0.42em, loosened to 0.3em below 620px."
+      },
+      "note": {
+        "displayName": "Note",
+        "purpose": "Explanatory notes under a demo: the revert note, the permissions note, the empty-search guidance."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Secondary UI prose: waitlist consent line, revision summaries, the hero scroll link."
+      },
+      "fine": {
+        "displayName": "Fine",
+        "purpose": "Metadata lines that are read, not scanned: breadcrumbs, revision stamps, result sources, the footer disclosure."
+      },
+      "control": {
+        "displayName": "Control",
+        "purpose": "Text typed into or read out of a control. Fixed, never fluid, so inputs do not resize with the viewport."
+      },
+      "tree-space": {
+        "displayName": "Tree space",
+        "purpose": "A space row in the structure tree. Oversized on purpose: this band gives its weight to the tree, not to its heading."
+      },
+      "tree-row": {
+        "displayName": "Tree row",
+        "purpose": "A page row in the structure tree, one step under its space."
+      },
+      "headline-close": {
+        "displayName": "Headline / close",
+        "purpose": "The closing band only. The page ends on its largest, centred heading."
+      },
+      "headline-loud": {
+        "displayName": "Headline / loud",
+        "purpose": "The search band. Opens at the page maximum over a full-bleed field."
+      },
+      "headline-quiet": {
+        "displayName": "Headline / quiet",
+        "purpose": "The structure band. Deliberately demoted so the enlarged tree, not the heading, carries the band."
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Actual code only — inline code and code blocks in the document body. Never used to make UI look technical."
+      }
+    },
+    "shadows": [
+      {
+        "name": "control-ignition",
+        "value": "0 0 1.5rem rgba(0, 229, 255, 0.35), inset 0 0 2rem rgba(0, 229, 255, 0.12)",
+        "purpose": "Button hover. The amber variant uses rgba(245,168,60,0.32) / 0.1."
+      },
+      {
+        "name": "field-focus",
+        "value": "0 0 1.2rem rgba(0, 229, 255, 0.25)",
+        "purpose": "Input focus. The composite search field uses a wider 0 0 1.4rem rgba(0,229,255,0.22)."
+      },
+      {
+        "name": "selected-revision",
+        "value": "0 0 0.9rem rgba(0, 229, 255, 0.75)",
+        "purpose": "The dot of the currently open revision on the version rail."
+      },
+      {
+        "name": "kept-line",
+        "value": "0 0 0.7rem rgba(245, 168, 60, 0.6)",
+        "purpose": "The dot marking a line added in this revision."
+      },
+      {
+        "name": "headline-bloom",
+        "value": "text-shadow: 0 0 2.5rem rgba(0, 229, 255, 0.18)",
+        "purpose": "Hero headline only; the kept line takes rgba(245,168,60,0.28) instead."
+      },
+      {
+        "name": "match-bloom",
+        "value": "text-shadow: 0 0 0.85rem rgba(0, 229, 255, 0.75)",
+        "purpose": "The highlighted substring in a search result, on a background-less mark."
+      },
+      {
+        "name": "control-lift-paper",
+        "value": "0 10px 20px rgba(10, 106, 134, 0.1)",
+        "purpose": "Paper resolution of --control-lift: a button lifts instead of igniting."
+      },
+      {
+        "name": "control-lift-amber-paper",
+        "value": "0 10px 20px rgba(154, 87, 8, 0.1)",
+        "purpose": "Paper resolution of --control-lift-amber."
+      },
+      {
+        "name": "control-lift-amber-sea",
+        "value": "0 0 1.5rem rgba(245, 168, 60, 0.32), inset 0 0 2rem rgba(245, 168, 60, 0.1)",
+        "purpose": "Night-sea resolution of --control-lift-amber."
+      },
+      {
+        "name": "field-glow-paper",
+        "value": "0 8px 18px rgba(0, 111, 142, 0.12)",
+        "purpose": "Paper resolution of --field-glow: a focused field rises rather than glows."
+      },
+      {
+        "name": "dot-glow-paper",
+        "value": "0 0 0.75rem rgba(0, 111, 142, 0.34)",
+        "purpose": "Paper resolution of --wake-dot-glow on the selected revision dot."
+      },
+      {
+        "name": "kept-mark-paper",
+        "value": "0 0 0.55rem rgba(154, 87, 8, 0.38)",
+        "purpose": "Paper resolution of --amber-mark-glow on an added line."
+      },
+      {
+        "name": "match-bloom-paper",
+        "value": "text-shadow: 0 0 0.7rem rgba(0, 111, 142, 0.28)",
+        "purpose": "Paper resolution of --mark-glow on a search match."
+      },
+      {
+        "name": "headline-bloom-paper",
+        "value": "none",
+        "purpose": "Paper resolution of --hero-glow-now / --hero-glow-kept: paper has no bloom."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The only easing curve in the system. All state transitions use it."
+      },
+      {
+        "name": "state-transition",
+        "value": "0.4s–0.6s",
+        "purpose": "Colour, border, and glow changes on controls, links, and rail knots."
+      },
+      {
+        "name": "plankton-drift",
+        "value": "11s linear infinite (mask-position 0% → 120%)",
+        "purpose": "The authored dot field drifting inside a hovered or focused button."
+      },
+      {
+        "name": "wake-canvas",
+        "value": "requestAnimationFrame, dt-capped at 50ms",
+        "purpose": "The page's only authored motion. Paused on visibilitychange; drawn statically and redrawn on scroll under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "collapse",
+        "value": "900px"
+      },
+      {
+        "name": "compact",
+        "value": "620px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "A dark control defined by a lit cyan rim; hover ignites an authored plankton field inside it.",
+      "html": "<button class=\"ds-btn\">대기자 등록<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.25\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 12h15\"/><path d=\"m13 6 6 6-6 6\"/></svg></button>",
+      "css": ".ds-btn { --glow: var(--wake); position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 0.7rem; padding: 0.85rem 1.6rem; border: 1px solid var(--glow); border-radius: 2px; background: var(--control-base); color: var(--foam); font-family: 'SUIT Variable', Jost, system-ui, sans-serif; font-size: 0.85rem; letter-spacing: 0.16em; cursor: pointer; white-space: nowrap; isolation: isolate; transition: box-shadow 0.5s cubic-bezier(0.16,1,0.3,1), background 0.5s cubic-bezier(0.16,1,0.3,1); } .ds-btn::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--glow); opacity: 0; mask-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 50'%3E%3Cg fill='%23fff'%3E%3Ccircle cx='9' cy='33' r='1.7' opacity='.9'/%3E%3Ccircle cx='34' cy='22' r='1.9' opacity='.85'/%3E%3Ccircle cx='52' cy='36' r='1.4' opacity='.75'/%3E%3Ccircle cx='69' cy='44' r='1.6' opacity='.8'/%3E%3Ccircle cx='84' cy='29' r='2' opacity='.9'/%3E%3Ccircle cx='110' cy='17' r='1.7' opacity='.85'/%3E%3Ccircle cx='126' cy='25' r='1.5' opacity='.78'/%3E%3Ccircle cx='143' cy='34' r='1.8' opacity='.88'/%3E%3Ccircle cx='168' cy='13' r='1.6' opacity='.8'/%3E%3Ccircle cx='192' cy='39' r='1.9' opacity='.9'/%3E%3C/g%3E%3C/svg%3E\"); mask-size: 220% 130%; transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1); } .ds-btn:hover::before, .ds-btn:focus-visible::before { opacity: 0.8; animation: ds-drift 11s linear infinite; } @keyframes ds-drift { from { mask-position: 0% 50%; } to { mask-position: 120% 50%; } } .ds-btn:hover { background: linear-gradient(var(--control-wash), var(--control-wash)), var(--control-base); box-shadow: var(--control-lift); } .ds-btn:focus-visible { outline: 2px solid var(--wake); outline-offset: 3px; }"
+    },
+    {
+      "name": "Amber Button",
+      "kind": "button",
+      "refersTo": "button-amber",
+      "description": "The same control with its rim colour swapped to harbor amber — used for the kept-history action (waitlist submit).",
+      "html": "<button class=\"ds-btn-amber\">대기자 등록</button>",
+      "css": ".ds-btn-amber { --glow: var(--amber); display: inline-flex; align-items: center; justify-content: center; gap: 0.7rem; padding: 0.85rem 1.6rem; border: 1px solid var(--glow); border-radius: 2px; background: var(--control-base); color: var(--foam); font-family: 'SUIT Variable', Jost, system-ui, sans-serif; font-size: 0.85rem; letter-spacing: 0.16em; cursor: pointer; white-space: nowrap; transition: box-shadow 0.5s cubic-bezier(0.16,1,0.3,1), background 0.5s cubic-bezier(0.16,1,0.3,1); } .ds-btn-amber:hover { background: linear-gradient(rgba(245,168,60,0.14), rgba(245,168,60,0.14)), var(--control-base); box-shadow: 0 0 1.5rem rgba(245,168,60,0.32), inset 0 0 2rem rgba(245,168,60,0.1); } .ds-btn-amber:disabled { --glow: rgba(125,160,185,0.35); color: var(--foam-faint); background: transparent; cursor: not-allowed; box-shadow: none; } .ds-btn-amber:focus-visible { outline: 2px solid var(--wake); outline-offset: 3px; }"
+    },
+    {
+      "name": "Email Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Opaque-based text field with a hairline rim that goes wake cyan and glows on focus.",
+      "html": "<input class=\"ds-input\" type=\"email\" placeholder=\"name@company.com\" />",
+      "css": ".ds-input { width: 100%; max-width: 22rem; padding: 0.85rem 1.1rem; border: 1px solid var(--edge); border-radius: 2px; background: var(--field-base); color: var(--foam); font-family: 'SUIT Variable', Jost, system-ui, sans-serif; font-size: 0.95rem; transition: border-color 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s cubic-bezier(0.16,1,0.3,1); } .ds-input::placeholder { color: var(--foam-faint); } .ds-input:focus { outline: none; border-color: var(--wake); box-shadow: var(--field-glow); }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "finder-field",
+      "description": "Icon, label, and chrome-stripped input in one square bordered row that lights as a single unit on focus-within.",
+      "html": "<div class=\"ds-finder\"><svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.25\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"6.5\"/><path d=\"m16 16 4 4\"/></svg><input type=\"text\" placeholder=\"예: 권한, 반출, 검색\" /></div>",
+      "css": ".ds-finder { display: flex; align-items: center; gap: 0.9rem; max-width: 30rem; padding: 0.55rem 1.3rem; border: 1px solid var(--edge); background: var(--field-base); color: var(--foam-faint); transition: box-shadow 0.5s cubic-bezier(0.16,1,0.3,1), border-color 0.4s cubic-bezier(0.16,1,0.3,1), color 0.4s cubic-bezier(0.16,1,0.3,1); } .ds-finder:focus-within { border-color: var(--wake); color: var(--wake); box-shadow: 0 0 1.4rem rgba(0,229,255,0.22); } .ds-finder input { flex: 1; border: 0; background: none; padding: 0; color: var(--foam); font-family: 'SUIT Variable', Jost, system-ui, sans-serif; font-size: 0.95rem; } .ds-finder input:focus { outline: none; } .ds-finder input::placeholder { color: var(--foam-faint); }"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Fixed top bar: tracked-out wordmark left, section links right, over a separately masked blurred veil.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-brand\" href=\"#top\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.25\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"7.5\"/><circle cx=\"12\" cy=\"12\" r=\"2\"/></svg>HESTIA</a><nav class=\"ds-nav-links\"><a href=\"#history\">이력</a><a href=\"#structure\">구조</a><a href=\"#search\">검색</a></nav></header>",
+      "css": ".ds-nav { position: relative; display: flex; align-items: center; gap: 2rem; padding: 1.1rem 2rem; } .ds-nav::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgba(5,7,11,0.96) 40%, rgba(5,7,11,0)); backdrop-filter: blur(5px); mask-image: linear-gradient(to bottom, #000 55%, transparent); } .ds-brand { display: inline-flex; align-items: center; gap: 0.7rem; font-family: Jost, sans-serif; font-weight: 300; font-size: 0.95rem; letter-spacing: 0.42em; text-indent: 0.42em; color: var(--foam); text-decoration: none; } .ds-nav-links { display: flex; gap: 2.2rem; margin-left: auto; font-family: 'SUIT Variable', sans-serif; font-size: 0.8rem; letter-spacing: 0.16em; } .ds-nav-links a { color: var(--foam-faint); text-decoration: none; transition: color 0.4s cubic-bezier(0.16,1,0.3,1); } .ds-nav-links a:hover { color: var(--wake); }"
+    },
+    {
+      "name": "Version Rail",
+      "kind": "custom",
+      "refersTo": "version-knot",
+      "description": "The signature component: revisions on a single amber-to-cyan thread. Past revisions carry an amber dot, the open revision a glowing cyan one.",
+      "html": "<ol class=\"ds-rail\"><li><button class=\"ds-knot ds-knot-past\"><span class=\"ds-dot\"></span><span class=\"ds-no\">v2</span><span class=\"ds-meta\"><span>2026-03-11 09:41</span><span>정하윤</span></span><span class=\"ds-summary\">보관 기간 상향, 대상 범위 명시</span></button></li><li><button class=\"ds-knot ds-knot-on\" aria-current=\"true\"><span class=\"ds-dot\"></span><span class=\"ds-no\">v3</span><span class=\"ds-meta\"><span>2026-04-06 17:02</span><span>서지훈</span></span><span class=\"ds-summary\">검토 절차 간소화</span></button></li><li><button class=\"ds-knot\"><span class=\"ds-dot\"></span><span class=\"ds-no\">v4</span><span class=\"ds-meta\"><span>2026-05-19 11:28</span><span>정하윤</span></span><span class=\"ds-summary\">예외 조항 추가</span></button></li></ol>",
+      "css": ".ds-rail { list-style: none; margin: 0; padding: 0; position: relative; max-width: 22rem; } .ds-rail::before { content: ''; position: absolute; left: 6px; top: 1.4rem; bottom: 1.4rem; width: 1px; background: linear-gradient(to bottom, var(--amber-deep), rgba(75,214,255,0.35)); } .ds-knot { position: relative; display: grid; grid-template-columns: auto auto 1fr; grid-template-areas: 'dot no meta' '. summary summary'; align-items: center; gap: 0.15rem 0.75rem; width: 100%; padding: 0.85rem 0.9rem 0.85rem 0; border: 0; background: none; color: var(--foam-faint); font-family: 'SUIT Variable', sans-serif; text-align: left; cursor: pointer; transition: color 0.45s cubic-bezier(0.16,1,0.3,1); } .ds-dot { grid-area: dot; width: 13px; height: 13px; border: 1px solid var(--foam-faint); border-radius: 50%; background: var(--abyss); transition: border-color 0.45s cubic-bezier(0.16,1,0.3,1), box-shadow 0.55s cubic-bezier(0.16,1,0.3,1), background 0.45s cubic-bezier(0.16,1,0.3,1); } .ds-no { grid-area: no; font-family: Jost, sans-serif; font-size: 0.95rem; letter-spacing: 0.08em; } .ds-meta { grid-area: meta; display: flex; gap: 0.6rem; font-size: 0.72rem; opacity: 0.85; } .ds-summary { grid-area: summary; font-size: 0.82rem; line-height: 1.5; opacity: 0.8; } .ds-knot:hover { color: var(--foam-dim); } .ds-knot-past { color: var(--foam-dim); } .ds-knot-past .ds-dot { border-color: var(--amber); background: rgba(245,168,60,0.28); } .ds-knot-on { color: var(--foam); } .ds-knot-on .ds-dot { border-color: var(--wake); background: var(--wake); box-shadow: 0 0 0.9rem rgba(0,229,255,0.75); } .ds-knot:focus-visible { outline: 2px solid var(--wake); outline-offset: 3px; }"
+    },
+    {
+      "name": "Document Surface",
+      "kind": "card",
+      "refersTo": "document-surface",
+      "description": "The one washed surface in the system — a water column, not a card. Carries the three diff line states: kept, added (amber, glowing dot), cut (struck, hue-dimmed).",
+      "html": "<div class=\"ds-doc\"><div class=\"ds-doc-head\"><p class=\"ds-crumbs\">플랫폼실 / 보안 / 반출 문서 보안 정책</p><h3 class=\"ds-doc-title\">반출 문서 보안 정책</h3><p class=\"ds-stamp\">v3 · 2026-04-06 17:02 · 서지훈</p></div><div class=\"ds-doc-body\"><p class=\"ds-ln ds-ln-kept\"><span class=\"ds-mark\"></span><span>외부로 반출하는 문서는 반출 전에 검토를 받는다.</span></p><p class=\"ds-ln ds-ln-added\"><span class=\"ds-mark\"></span><span>검토는 문서 소유 팀 안에서 처리한다.</span></p><p class=\"ds-ln ds-ln-cut\"><span class=\"ds-mark\"></span><span>검토자는 팀장이 지정한다.</span></p></div></div>",
+      "css": ".ds-doc { border: 1px solid var(--edge-soft); background: linear-gradient(to bottom, rgba(13,33,56,0.55), rgba(8,18,34,0.4)); padding: 2rem; font-family: 'SUIT Variable', sans-serif; color: var(--foam); } .ds-doc-head { padding-bottom: 1.25rem; border-bottom: 1px solid var(--edge-soft); } .ds-crumbs { margin: 0; font-size: 0.75rem; letter-spacing: 0.1em; color: var(--foam-faint); } .ds-doc-title { margin: 0.6rem 0 0.5rem; font-size: 1.9rem; font-weight: 300; letter-spacing: -0.035em; line-height: 1.08; } .ds-stamp { margin: 0; font-family: Jost, sans-serif; font-size: 0.78rem; letter-spacing: 0.12em; color: var(--trace); } .ds-doc-body { margin-top: 1.75rem; } .ds-ln { display: grid; grid-template-columns: 1.4rem 1fr; align-items: baseline; gap: 0.5rem; margin: 0 0 0.7rem; font-size: 0.98rem; line-height: 1.7; } .ds-mark { width: 7px; height: 1px; margin-top: 0.85em; background: currentColor; opacity: 0.5; } .ds-ln-kept { color: var(--foam); } .ds-ln-added { color: var(--amber); } .ds-ln-added .ds-mark { width: 7px; height: 7px; margin-top: 0.55em; border-radius: 50%; opacity: 1; box-shadow: 0 0 0.7rem rgba(245,168,60,0.6); } .ds-ln-cut { color: rgba(125,176,205,0.62); text-decoration: line-through; text-decoration-color: rgba(125,176,205,0.45); text-decoration-thickness: 1px; }"
+    },
+    {
+      "name": "Search Result",
+      "kind": "custom",
+      "refersTo": "beam",
+      "description": "A result row that lights a cyan left rail when matched; the matched substring is a background-less mark in glowing cyan. Resting rows are hue-dimmed, never opacity-dimmed.",
+      "html": "<ul class=\"ds-beams\"><li class=\"ds-beam ds-beam-hit\"><p class=\"ds-beam-text\">고객 데이터가 포함된 문서는 <mark>반출</mark> 전에 예외 없이 검토 대상이다.</p><p class=\"ds-beam-src\">플랫폼실 <span aria-hidden=\"true\">/</span> 반출 문서 보안 정책</p></li><li class=\"ds-beam ds-beam-dark\"><p class=\"ds-beam-text\">권한은 스페이스에서 아래로 흐른다.</p><p class=\"ds-beam-src\">플랫폼실 <span aria-hidden=\"true\">/</span> 권한 설계 노트</p></li></ul>",
+      "css": ".ds-beams { list-style: none; margin: 0; padding: 0; font-family: 'SUIT Variable', sans-serif; } .ds-beam { padding: 0.95rem 0 0.95rem 1.4rem; border-left: 1px solid transparent; transition: border-color 0.6s cubic-bezier(0.16,1,0.3,1); } .ds-beam + .ds-beam { border-top: 1px solid var(--edge-soft); } .ds-beam-text { margin: 0; font-size: 0.98rem; line-height: 1.7; color: var(--foam); } .ds-beam-dark .ds-beam-text { color: var(--foam-rest); } .ds-beam-hit { border-left-color: var(--wake); } .ds-beam-hit .ds-beam-text { color: var(--foam); } .ds-beam-src { margin: 0.45rem 0 0; font-family: Jost, sans-serif; font-size: 0.75rem; letter-spacing: 0.14em; color: var(--foam-faint); } .ds-beam mark { background: none; color: var(--wake); text-shadow: 0 0 0.85rem rgba(0,229,255,0.75); }"
+    },
+    {
+      "name": "Space Tree Row",
+      "kind": "custom",
+      "refersTo": "twig",
+      "description": "Nested tree rows indented against a soft hairline. Spaces are larger with a cyan ring; role tags are uppercase amber; a locked space renders present but unopenable.",
+      "html": "<ul class=\"ds-twigs\"><li class=\"ds-branch ds-space\"><div class=\"ds-twig\"><button class=\"ds-toggle ds-open\" aria-expanded=\"true\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.25\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m9 6 6 6-6 6\"/></svg></button><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.25\" aria-hidden=\"true\" class=\"ds-space-icon\"><circle cx=\"12\" cy=\"12\" r=\"7.5\"/><circle cx=\"12\" cy=\"12\" r=\"2\"/></svg><span>플랫폼실</span><span class=\"ds-role\">관리자</span></div><ul class=\"ds-twigs ds-nested\"><li><div class=\"ds-twig\"><span class=\"ds-toggle\"></span><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.25\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 3.5h8L18.5 8v12.5H6z\"/><path d=\"M13.5 3.5V8.5h5\"/></svg><span>반출 문서 보안 정책</span></div></li></ul></li><li class=\"ds-branch ds-locked\"><div class=\"ds-twig\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.25\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"4.5\" y=\"10.5\" width=\"15\" height=\"9.5\" rx=\"1.5\"/><path d=\"M8 10.5V7.5a4 4 0 0 1 8 0v3\"/></svg><span>재무실</span><span class=\"ds-note\">권한 없음 · 제목만 보입니다</span></div></li></ul>",
+      "css": ".ds-twigs { list-style: none; margin: 0; padding: 0; font-family: 'SUIT Variable', sans-serif; } .ds-nested { margin-left: 0.72rem; padding-left: 1.15rem; border-left: 1px solid var(--edge-soft); } .ds-twig { display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 0; font-size: 1.06rem; color: var(--foam-dim); transition: color 0.4s cubic-bezier(0.16,1,0.3,1); } .ds-twig:hover { color: var(--foam); } .ds-space > .ds-twig { color: var(--foam); font-size: 1.3rem; padding-block: 0.75rem; } .ds-space-icon { color: var(--wake); } .ds-toggle { display: inline-flex; align-items: center; justify-content: center; width: 1.15rem; height: 1.15rem; padding: 0; border: 0; background: none; color: var(--foam-faint); cursor: pointer; transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), color 0.4s cubic-bezier(0.16,1,0.3,1); } .ds-open { transform: rotate(90deg); color: var(--trace); } .ds-role { margin-left: 0.35rem; font-family: Jost, sans-serif; font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); opacity: 0.9; } .ds-locked .ds-twig { color: #8fafc6; } .ds-note { font-size: 0.74rem; color: #8fafc6; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Wake That Never Cools Out",
+    "overview": "The whole world is one image held consistently: a hull crossing a night sea. Everything the sea itself lights — plankton around the hull, plankton under the cursor — burns for a second or two and dies. That is what every other tool does with document history. The wake behind the hull does not die: it spreads, it cools from cyan to amber, and it stays lit all the way back to the top of the document. That is Hestia. The page does not argue this in copy first; it renders it, and the copy names what the reader already saw.\n\nThe surface is dark, thin, and quiet. Ground is abyss black (#05070b) with no lighter surface tier anywhere on the page — there are no cards, no panels, no three-column feature grid. Structure comes from hairline rules, left borders, and lit rims rather than from filled boxes. Type is set at ultra-thin weights (250 for headings, 350–400 for prose) at large sizes, so headings read as drawn line rather than as mass. Density is low and vertical: one reading column, left-aligned, in a lane the canvas is deliberately kept out of.\n\nThe one deviation the build permits itself is the closing band, which centers after four left-aligned bands so the page ends on a different axis than it ran on. Everything else holds a single left edge.",
+    "keyCharacteristics": [
+      "Two grounds, one vocabulary: paper (default) and the night sea, resolved from the same token names.",
+      "Abyss black ground with no elevated surface tier; depth is atmospheric, not stacked.",
+      "Two-temperature semantic colour: cyan is now, amber is kept.",
+      "Ultra-thin geometric sans (SUIT 250/300/350, Jost 300/400 for Latin labels) at large display sizes.",
+      "Controls are dark and defined by a lit rim, never by a coloured slab.",
+      "Exactly one authored motion: the fixed-canvas wake. Sections do not animate in.",
+      "Authored SVG icons only — 24 grid, 1.25 stroke, round caps, no fills, no glyphs, no emoji."
+    ],
+    "rules": [
+      {
+        "name": "The Two Temperatures Rule",
+        "body": "Cyan means live, amber means kept, and nothing else may claim either. A cyan element must be something happening right now (focus, selection, a match, the hull). An amber element must be something the product refused to lose (an added line, a past revision, a confirmed registration). Decorative use of either breaks the page's only argument.",
+        "section": "colors"
+      },
+      {
+        "name": "The No Opacity Dimming Rule",
+        "body": "Dimmed text is dimmed with a hue-tinted colour at full alpha, never with opacity. A resting search result is #7f9fb6, not foam at 60%. The dimmed states are still body text and still have to clear 4.5:1 against the abyss.",
+        "section": "colors"
+      },
+      {
+        "name": "The Opaque Base Rule",
+        "body": "Any control the fixed canvas passes behind gets an opaque base — --control-base for buttons, --field-base for fields. Without it the wake bleeds through and the control reads a different colour at every scroll position. Both tokens resolve per theme, so the rule holds on either ground.",
+        "section": "colors"
+      },
+      {
+        "name": "The Thin-and-Large Rule",
+        "body": "Headings get lighter as they get bigger (250 at display, 300 at title, 400 at body). Never bold a heading to add emphasis; move it up the size ramp or change its colour instead.",
+        "section": "typography"
+      },
+      {
+        "name": "The Different Bar Rule",
+        "body": "No two consecutive sections open at the same heading size. The heading scale is a rhythm instrument, not a fixed ramp.",
+        "section": "typography"
+      },
+      {
+        "name": "The Latin Lane Rule",
+        "body": "Version numbers, dates, paths, and the wordmark are Jost; Korean prose is SUIT. Never set Korean in Jost.",
+        "section": "typography"
+      },
+      {
+        "name": "The Quiet Column Rule",
+        "body": "A left-to-right scrim is painted over the canvas every frame — 78%→46%→0% abyss at desktop, 84%→72%→52% below 900px — so the reading column always sits on near-solid black. Text is never placed in the lit lane.",
+        "section": "layout"
+      },
+      {
+        "name": "The Glow-Not-Shade Rule",
+        "body": "Every shadow in this system is a light source at a state change. There are no drop shadows, no offset shadows, no ambient occlusion under resting elements. If an element is not doing something, it does not glow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Hairline Rule",
+        "body": "Borders are 1px and cyan-tinted at 22% (--edge) or 10% (--edge-soft). No thick borders, no double rules, no filled dividers.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Authored Icon Rule",
+        "body": "Icons are hand-drawn SVG on a 24 grid at 1.25 stroke with round caps and joins, fill: none, coloured by currentColor. Six exist (arrow, lock, search, ring, page, caret). No icon fonts, no emoji, no glyph characters, no third-party icon packages.",
+        "section": "shapes"
+      },
+      {
+        "name": "The One Definition Rule",
+        "body": "A colour is defined exactly once per theme, in the :root and [data-theme=\"dark\"] blocks of globals.css, and everywhere else it is referenced by name. [data-theme=\"light\"] blocks that restate a value are drift, not theming: the light landing once carried twenty-one such overrides, every one of them a value that had been hardcoded into a base rule and then undone. There is now exactly one light-only rule in the system — the daylight wash, which exists because the canvas is hidden rather than recoloured.",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "Do reserve wake cyan (#00e5ff) for live state and harbor amber (#f5a83c) for kept history. Ask \"is this happening now, or was this held on to?\" before assigning either.",
+      "Do give any control that sits over the fixed canvas an opaque base (rgba(7,13,22,0.94) / rgba(7,15,28,0.93)); otherwise the wake changes its colour as the page scrolls.",
+      "Do dim with a hue-tinted colour at full alpha (#7f9fb6, rgba(125,176,205,0.62)), never with opacity — dimmed body text must still clear 4.5:1 on abyss black.",
+      "Do define surfaces with a lit 1px rim or a single edge, and draw structure with hairlines at --edge (22%) or --edge-soft (10%).",
+      "Do vary the section heading size band to band (1.5rem floor for structure, 4.6rem ceiling for search) so no two consecutive sections open identically.",
+      "Do draw new icons on the 24 grid at 1.25 stroke with round caps, fill: none, and currentColor.",
+      "Do label demonstration content as authored where a visitor could mistake it for a real customer — the amber-dotted synthetic note, the finder note, and the footer all say so.",
+      "Do run state transitions at 0.4–0.6s on cubic-bezier(0.16, 1, 0.3, 1)."
+    ],
+    "donts": [
+      "Don't add a second authored motion. The fixed canvas wake is the page's only animation; sections have no entrance, reveal, or parallax behaviour, and adding one would compete with the argument the canvas is making.",
+      "Don't build cards or a three-column feature grid. There is no elevated surface tier and no repeating tile; the two-column grids that exist are content-specific (rail + document, tree + note).",
+      "Don't fill a control with a colour. Buttons are dark surfaces with a lit rim; a coloured slab reads as a different product.",
+      "Don't use box-shadow for elevation. Every shadow here is a glow at a state change, and a resting element never glows.",
+      "Don't place text in the canvas's lit lane (right 45% at desktop, right 15% below 900px) or weaken the scrim to show more wake.",
+      "Don't introduce emoji, icon fonts, glyph characters, or a third-party icon package.",
+      "Don't bold a heading for emphasis; heading weight goes down as size goes up (250 display, 300 title).",
+      "Don't set Korean prose in Jost, or add a third typeface.",
+      "Don't remove :focus-visible outlines or replace the focus glow with a colour change alone.",
+      "Don't ship the current demonstration data as real. Every name, date, document, and search sentence in app/data.ts is authored for this page."
+    ]
+  }
+}

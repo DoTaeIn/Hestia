@@ -1,0 +1,50 @@
+{
+  "title": "Hestia 랜딩 — 시각 세계 결정",
+  "question": "롤이 '원장(Ledger)'을 배정했습니다. 그대로 갈지, 대안을 고를지, 다시 굴릴지 선택하세요.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "원장 (Ledger)",
+      "kicker": "THE ROLL",
+      "lineage": "19세기 복식부기 상업 원장 — 안전지, 붉은 괘선, 철몰식 잉크",
+      "thesis": "지우지 않는 장부. 정정은 삭제가 아니라 새로 그은 한 줄이다.",
+      "palette": ["#C7DCD0", "#C8352A", "#16233D", "#B08838"],
+      "materials": ["안전지 길로셰 무늬", "활판 괘선", "놋쇠 칼럼 디바이더", "고무 날짜 스탬프"],
+      "viewport": "첫 화면이 통째로 펼쳐진 원장 지면이다. 붉은 괘선이 화면을 가로지르며 스스로 그어지고, 그 위로 한 문서의 수정 이력이 차변·대변처럼 두 칼럼에 기입된다. 취소선 대신 아랫줄이 추가되고, 우측 상단에 날짜 스탬프가 찍힌다. 대기자 등록 입력란은 원장의 마지막 빈 줄이다.",
+      "risk": "괘선과 칼럼을 곧이곧대로 쓰면 회계 소프트웨어 랜딩으로 오독된다. 원장의 규율은 가져오되 숫자가 아니라 문장이 기입되어야 한다."
+    },
+    {
+      "id": "challenger-massin",
+      "label": "Massin 무대 지면",
+      "lineage": "Massin의 『대머리 여가수』 조판 — 목소리마다 다른 활자, 크기가 곧 성량",
+      "thesis": "두 버전의 차이를 두 목소리의 충돌로 조판한다.",
+      "case": "융합은 강렬하다. diff가 곧 두 목소리의 대사 충돌이 되고 변경량이 활자 크기로 읽힌다. 다만 문서 협업 제품보다 예술 지면으로 먼저 읽혀 product clarity에서 원장에 밀린다.",
+      "hero": "https://impeccable.style/worlds/cards/massin-stage-page-hero.webp"
+    },
+    {
+      "id": "challenger-phosphor",
+      "label": "인광 터미널",
+      "lineage": "심야 기계실의 P1 인광 녹색 터미널",
+      "thesis": "화면 전체가 하나의 트랜스크립트이고, 이력은 스크롤 위쪽에 그대로 남아 있다.",
+      "case": "이력=트랜스크립트라는 대응은 정확하다. 그러나 단색 그 자체라 '너무 단색이면 별로'라는 요청과 정면으로 부딪히고, 제가 미리 배제한 뻔한 반대극(브루탈리스트 모노 터미널)과 그대로 겹친다.",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-phosphor-terminal-midnight-hero.webp"
+    },
+    {
+      "id": "challenger-plankton",
+      "label": "야광 플랑크톤 바다",
+      "lineage": "밤바다에서 지나간 자리마다 빛나는 발광 플랑크톤",
+      "thesis": "움직인 흔적이 빛으로 남았다가 어둠에 삼켜진다.",
+      "case": "융합이 실패한다. 이 세계의 핵심은 흔적이 몇 초 뒤 사라진다는 것인데, Hestia의 주장은 정확히 그 반대다. 아름답지만 제품이 하는 말을 부정한다.",
+      "hero": "https://impeccable.style/worlds/cards/reefs-bioluminescent-nocturnal-plankton-wake-stars.webp"
+    }
+  ],
+  "reroll": true,
+  "canon": true,
+  "canonCard": {
+    "label": "카테고리 표준",
+    "thesis": "SaaS 랜딩이 늘 내놓는 그 구성을, 흠잡을 데 없는 완성도로.",
+    "viewport": "그라디언트 히어로 위 한 줄 헤드라인, 앱 스크린샷 목업, 로고 바, 3열 기능 카드, 하단 CTA. 방문자가 예상하는 그대로의 배치.",
+    "risk": "이 페이지를 본 사람은 한 시간 뒤 아무것도 묘사하지 못한다."
+  },
+  "steer": true
+}

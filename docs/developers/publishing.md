@@ -11,7 +11,7 @@
 
 개인 액세스 토큰이나 Supabase secret을 추가하지 않는다. 배포 작업만 `pages: write`·`id-token: write`를 갖고 기본 브랜치에서 실행된다. PR·다른 브랜치는 빌드만 실행하며 사이트를 게시하지 않는다. 문서/빌드 관련 경로의 push·PR 또는 수동 실행으로 동작한다. [GitHub 공식 custom workflow 안내](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
-이 저장소에서는 워크플로와 문서 사이트를 준비·로컬 검증했으며 원격 push나 실제 Pages 발행은 수행하지 않았다.
+2026-10-22 사용자의 게시 요청에 따라 GitHub Pages를 Actions 방식으로 활성화하고 실제 게시를 확인했다. 공개 주소는 [Hestia 개발자 문서](https://dotaein.github.io/Hestia/)다. 앱 운영 배포와 운영 DB 변경은 수행하지 않았다.
 
 ## 로컬 미리보기
 

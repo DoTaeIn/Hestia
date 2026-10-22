@@ -72,3 +72,5 @@ Node.js 24 이상에서 `npm ci`, `npm test`, `npm run typecheck`, `npm run buil
 
 
 개발자 문서 사이트는 `npm run docs:build`로 생성한다. [GitHub Actions/Pages 게시 설정](docs/developers/publishing.md)을 참고한다.
+
+개발자 문서 공개 사이트: [Hestia Developer Docs](https://dotaein.github.io/Hestia/).

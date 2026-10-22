@@ -1,73 +1,119 @@
 "use client";
 
 import * as Y from "yjs";
-import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate } from "y-protocols/awareness";
 import { createClient } from "@/lib/supabase/browser";
+import {
+  applyLoadedCollaboration,
+  CollaborationProviderCore,
+  createMemoryOperationStore,
+  loadPageCollaboration,
+  seedCollaborationDocument,
+  type CollaborationProviderOptions,
+  type LoadCollaborationResult,
+  type OperationStore,
+  type RealtimeChannelLike,
+  type RealtimeClientLike,
+  type SupabaseRpcClient,
+} from "../engine/collaboration";
 
-const toBase64 = (value: Uint8Array) => {
-  let binary = "";
-  for (let offset = 0; offset < value.length; offset += 0x8000) {
-    binary += String.fromCharCode(...value.subarray(offset, offset + 0x8000));
-  }
-  return btoa(binary);
-};
-const fromBase64 = (value: string) => Uint8Array.from(atob(value), (char) => char.charCodeAt(0));
+export { buildSeedUpdate, fromBase64 } from "../engine/collaboration";
+export type { CollaborationStatus, CollaborationStatusDetail, LoadCollaborationResult, StaleRecoveryDetail } from "../engine/collaboration";
 
-export async function loadCollaboration(pageId: string) {
-  const { data, error } = await createClient().rpc("initialize_page_collaboration", { target_page_id: pageId }).single();
-  if (error || !data) throw error ?? new Error("공동 편집 문서를 불러오지 못했습니다.");
-  return data as { collaboration_state: string | null; should_seed: boolean; collaboration_generation: number };
+/**
+ * The real client already has the shape these two interfaces require
+ * (`rpc(fn, args).single()` and `channel(topic, config)`); this only narrows the type.
+ */
+function asRpcClient(client: ReturnType<typeof createClient>): SupabaseRpcClient {
+  return client as unknown as SupabaseRpcClient;
 }
 
-export class SupabaseYjsProvider {
-  readonly awareness: Awareness;
-  private readonly channel;
-  private connected = false;
-  private saveTimer: number | undefined;
+function asRealtimeClient(client: ReturnType<typeof createClient>): RealtimeClientLike {
+  return {
+    channel: (topic, config) => client.channel(topic, config as Parameters<typeof client.channel>[1]) as unknown as RealtimeChannelLike,
+  };
+}
 
-  constructor(
-    readonly doc: Y.Doc,
-    private readonly pageId: string,
-    private readonly generation: number,
-    user: { id: string; name: string },
-  ) {
-    this.awareness = new Awareness(doc);
-    this.awareness.setLocalStateField("user", { name: user.name });
-    this.channel = createClient().channel(`page:${pageId}`, { config: { broadcast: { self: false }, presence: { key: user.id } } });
-    this.channel
-      .on("broadcast", { event: "yjs-update" }, ({ payload }) => { if (payload.generation === this.generation) Y.applyUpdate(this.doc, fromBase64(payload.update), this); })
-      .on("broadcast", { event: "yjs-awareness" }, ({ payload }) => { if (payload.generation === this.generation) applyAwarenessUpdate(this.awareness, fromBase64(payload.update), this); })
-      .subscribe((status) => { this.connected = status === "SUBSCRIBED"; });
-    this.doc.on("update", (update, origin) => {
-      if (origin !== this && this.connected) void this.channel.send({ type: "broadcast", event: "yjs-update", payload: { update: toBase64(update), generation: this.generation } });
-      if (origin !== this) this.queuePersistence();
-    });
-    this.awareness.on("update", ({ added, updated, removed }: { added: number[]; updated: number[]; removed: number[] }, origin: unknown) => {
-      if (origin !== this && this.connected) {
-        const update = encodeAwarenessUpdate(this.awareness, [...added, ...updated, ...removed]);
-        void this.channel.send({ type: "broadcast", event: "yjs-awareness", payload: { update: toBase64(update), generation: this.generation } });
+export async function loadCollaboration(pageId: string): Promise<LoadCollaborationResult> {
+  return loadPageCollaboration(asRpcClient(createClient()), pageId);
+}
+
+export { applyLoadedCollaboration };
+
+export async function seedIfNeeded(pageId: string, generation: number, seedStateBase64: string, doc: Y.Doc, origin: unknown) {
+  await seedCollaborationDocument(asRpcClient(createClient()), pageId, generation, seedStateBase64, doc, origin);
+}
+
+/** `localStorage` wrapped as an `OperationStore`, falling back to an in-memory store (marked unavailable) if storage is missing/blocked (private mode, quota, SSR). */
+function browserOperationStore(): OperationStore {
+  let usable = typeof window !== "undefined";
+  if (usable) {
+    try {
+      window.localStorage.setItem("__hestia_collab_probe__", "1");
+      window.localStorage.removeItem("__hestia_collab_probe__");
+    } catch {
+      usable = false;
+    }
+  }
+  if (!usable) return createMemoryOperationStore(false);
+
+  let quotaOk = true;
+  return {
+    keys() {
+      const keys: string[] = [];
+      try {
+        for (let i = 0; i < window.localStorage.length; i++) {
+          const key = window.localStorage.key(i);
+          if (key) keys.push(key);
+        }
+      } catch {
+        quotaOk = false;
       }
+      return keys;
+    },
+    getItem(key) {
+      try {
+        return window.localStorage.getItem(key);
+      } catch {
+        quotaOk = false;
+        return null;
+      }
+    },
+    setItem(key, value) {
+      try {
+        window.localStorage.setItem(key, value);
+      } catch {
+        // full/blocked after the probe succeeded (e.g. quota hit mid-session) — stop promising retention
+        quotaOk = false;
+      }
+    },
+    removeItem(key) {
+      try {
+        window.localStorage.removeItem(key);
+      } catch {
+        // ignore
+      }
+    },
+    get available() {
+      return quotaOk;
+    },
+  };
+}
+
+export class SupabaseYjsProvider extends CollaborationProviderCore {
+  constructor(
+    doc: Y.Doc,
+    pageId: string,
+    generation: number,
+    user: { id: string; name: string },
+    options: Pick<CollaborationProviderOptions, "onStatus" | "onStaleRecovery"> = {},
+  ) {
+    const client = createClient();
+    super(doc, pageId, generation, user, {
+      client: asRpcClient(client),
+      realtime: asRealtimeClient(client),
+      store: browserOperationStore(),
+      onStatus: options.onStatus,
+      onStaleRecovery: options.onStaleRecovery,
     });
-  }
-
-  private queuePersistence() {
-    window.clearTimeout(this.saveTimer);
-    this.saveTimer = window.setTimeout(() => {
-      void this.persist();
-    }, 900);
-  }
-
-  async persist() {
-    return createClient().rpc("save_page_collaboration", {
-      target_page_id: this.pageId,
-      next_state: toBase64(Y.encodeStateAsUpdate(this.doc)),
-      expected_generation: this.generation,
-    });
-  }
-
-  destroy() {
-    window.clearTimeout(this.saveTimer);
-    this.awareness.destroy();
-    void this.channel.unsubscribe();
   }
 }

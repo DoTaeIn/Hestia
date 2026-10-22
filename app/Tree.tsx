@@ -3,16 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Caret, Lock, Page, Ring } from "./icons";
-import { docHref } from "./editor/documents";
+const docHref = (id?: string) => id ? `/editor/${id}` : undefined;
 
-export type TreeNode = {
-  name: string;
-  kind: "space" | "page";
-  id?: string;
-  role?: string;
-  locked?: boolean;
-  children?: TreeNode[];
-};
+import type { PageTreeNode } from "@/engine";
+export type TreeNode = PageTreeNode;
 
 /**
  * Shared space/page tree, used by the editor's document panel and the space

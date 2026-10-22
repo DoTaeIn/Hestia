@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/browser";
+import { createBrowserEngine } from "@/lib/engine/browser";
 
 export type Notification = {
   id: string;
@@ -22,11 +22,7 @@ type Row = {
 
 /** newest first; the bell shows a window, not the whole history */
 export async function fetchNotifications(limit = 20): Promise<Notification[]> {
-  const { data, error } = await createClient()
-    .from("notifications")
-    .select("id, kind, created_at, read_at, page_id, actor:profiles!actor_id(display_name), page:pages!page_id(title)")
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  const { data, error } = await createBrowserEngine().notifications.list(limit);
   if (error) throw new Error(error.message);
 
   return ((data ?? []) as unknown as Row[]).map((row) => ({
@@ -41,9 +37,7 @@ export async function fetchNotifications(limit = 20): Promise<Notification[]> {
 }
 
 export async function markRead(ids?: string[]): Promise<void> {
-  const { error } = await createClient().rpc("mark_notifications_read", {
-    target_ids: ids ?? null,
-  });
+  const { error } = await createBrowserEngine().notifications.markRead(ids);
   if (error) throw new Error(error.message);
 }
 

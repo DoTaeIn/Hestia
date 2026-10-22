@@ -1,3 +1,6 @@
+import { createServerSecurity } from "@/lib/auth/security-server";
+import { createServerAuth } from "@/lib/auth/server";
+import { authConfig } from "@/auth.config";
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { DEFAULT_NEXT, safeNext } from "@/lib/safeNext";
@@ -6,18 +9,26 @@ export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
   const next = safeNext(request.nextUrl.searchParams.get("next"));
   const to = (path: string) => NextResponse.redirect(new URL(path, request.url));
+  const invalidLink = () => to(`${authConfig.loginPath}?error=invalid_link&next=${encodeURIComponent(next)}`);
 
-  if (!code) return to(DEFAULT_NEXT);
+  if (!code) return invalidLink();
 
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+  const { data: user, error } = await createServerAuth(supabase).exchangeCode(code);
   // an expired or replayed link lands here; send them back to ask for a new one
-  if (error || !data.user) return to("/login");
+  if (error || !user) return invalidLink();
+
+  const security = createServerSecurity(supabase);
+  if (security) {
+    const assurance = await security.getAssurance();
+    if (assurance.error) return to("/space");
+    if (assurance.data.nextLevel === "aal2" && assurance.data.currentLevel !== "aal2") return to(`/account/verify?next=${encodeURIComponent(next === DEFAULT_NEXT ? "/space" : next)}`);
+  }
 
   const { data: membership, error: membershipError } = await supabase
     .from("workspace_members")
     .select("workspace_id")
-    .eq("user_id", data.user.id)
+    .eq("user_id", user.id)
     .limit(1)
     .maybeSingle();
 

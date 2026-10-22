@@ -8,6 +8,7 @@ export async function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
+      cookieOptions: { sameSite: "lax", secure: process.env.NEXT_PUBLIC_SITE_URL?.startsWith("https://") ?? false },
       cookies: {
         getAll: () => cookieStore.getAll(),
         setAll: (items) => {

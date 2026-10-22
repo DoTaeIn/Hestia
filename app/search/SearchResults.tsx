@@ -8,6 +8,7 @@ import AccountMenu from "../AccountMenu";
 import NotificationBell from "../NotificationBell";
 import { useTheme } from "../useTheme";
 import { highlight } from "../highlight";
+import { workspaceHref } from "@/lib/workspace-context";
 import { Moon, Search, Sun } from "../icons";
 
 export type SearchHit = {
@@ -20,7 +21,7 @@ export type SearchHit = {
   version?: number | null;
 };
 
-export default function SearchResults({ hits, query }: { hits: SearchHit[]; query: string }) {
+export default function SearchResults({ hits, query, workspaceId }: { hits: SearchHit[]; query: string; workspaceId: string }) {
   const { dark, toggle: toggleDark } = useTheme();
   const router = useRouter();
   const [q, setQ] = useState(query);
@@ -30,19 +31,19 @@ export default function SearchResults({ hits, query }: { hits: SearchHit[]; quer
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const next = q.trim();
-    router.replace(next ? `/search?q=${encodeURIComponent(next)}` : "/search");
+    router.replace(workspaceHref(next ? `/search?q=${encodeURIComponent(next)}` : "/search", workspaceId));
   }
 
   function clear() {
     setQ("");
-    router.replace("/search");
+    router.replace(workspaceHref("/search", workspaceId));
     field.current?.focus();
   }
 
   return (
     <div className="surface search-page">
       <header className="bar">
-        <Link className="bar-mark" href="/space">
+        <Link className="bar-mark" href={workspaceHref("/space", workspaceId)}>
           <BrandMark size={28} />
         </Link>
 

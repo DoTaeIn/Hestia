@@ -1,0 +1,15 @@
+.profile-page { min-height: 100dvh; }
+.profile-card { max-width: 660px; margin: 48px auto; padding: 32px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; }
+.profile-card h1 { margin: 0 0 8px; font-size: 1.65rem; }
+.profile-intro, .profile-help { color: var(--ink-dim); }
+.profile-form { display: grid; gap: 18px; margin-top: 28px; }
+.profile-field { display: grid; gap: 7px; font-size: 0.875rem; font-weight: 500; }
+.profile-field input { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid var(--line-strong); background: var(--paper); color: var(--ink); border-radius: 6px; font: inherit; }
+.profile-field input:focus { outline: 2px solid var(--now-line); outline-offset: 2px; }
+.profile-field input[readonly] { background: var(--sunk); color: var(--ink-dim); }
+.profile-help { margin: -10px 0 0; font-size: 0.8rem; line-height: 1.6; }
+.profile-preview { display: flex; align-items: center; gap: 14px; }
+.profile-preview img, .profile-preview > span:first-child { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.profile-preview > span:first-child { display: grid; place-items: center; background: var(--now-soft); color: var(--now); font-size: 1.2rem; }
+.profile-message { color: var(--ok); }
+@media (max-width: 700px) { .profile-card { margin: 24px 16px; padding: 24px; } }

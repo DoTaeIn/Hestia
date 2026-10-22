@@ -12,9 +12,12 @@ import AccountMenu from "../AccountMenu";
 import NotificationBell from "../NotificationBell";
 import { useTheme } from "../useTheme";
 import { useSearchShortcut } from "../useSearchShortcut";
-import { createClient } from "@/lib/supabase/browser";
+import { createBrowserEngine } from "@/lib/engine/browser";
 import { documentText, needsReason, type PageRecord, type PageRevision } from "@/lib/pages";
 import type { CommentThread } from "@/lib/comments";
+import { clearRecordedTitleDrafts, readTitleDrafts, titleDraftKey, writeTitleDraft, type TitleDraft } from "@/lib/title-drafts";
+import type { CollaborationStatusDetail } from "@/lib/collaboration";
+import { workspaceHref } from "@/lib/workspace-context";
 import { Moon, Restore, Search, Share, Sun, Trash } from "../icons";
 import type { JSONContent } from "@tiptap/core";
 
@@ -27,7 +30,7 @@ const SAVE_WORD: Record<Save, string> = {
   error: "저장 실패",
 };
 
-type WorkspaceMember = { userId: string; name: string; role: "owner" | "admin" | "editor" | "viewer" };
+type WorkspaceMember = { userId: string; name: string; role: "owner" | "admin" | "editor" | "viewer"; roleName?: string; canEdit?: boolean };
 type Props = { page: PageRecord; pages: PageRecord[]; revisions: PageRevision[]; workspaceName: string; tree: TreeNode[]; workspaceMembers: WorkspaceMember[]; currentUserId: string; currentUserName: string; documentOwnerName: string; canManageSharing: boolean; canGrantAdmin: boolean; canEdit: boolean; canSaveVersion: boolean; commentThreads: CommentThread[] };
 
 function TextDiff({ before, after }: { before: string; after: string }) {
@@ -62,10 +65,26 @@ export default function Workbench({ page, pages, revisions, workspaceName, tree,
   const [nextOwnerId, setNextOwnerId] = useState("");
   const [transferring, setTransferring] = useState(false);
   const latest = useRef<{ title: string; content: JSONContent }>({ title: page.title, content: page.content });
+  const [collaborationBlocked, setCollaborationBlocked] = useState(canEdit);
+  // the live Yjs doc may hold edits beyond `page.content` as soon as collaboration connects;
+  // a version save must wait for Doc to publish that live content at least once.
+  const [collaborationHandshakeDone, setCollaborationHandshakeDone] = useState(!canEdit);
   const { dark, toggle: toggleDark } = useTheme();
   const router = useRouter();
-  useSearchShortcut();
-  const hasLocalChanges = false;
+  useSearchShortcut(page.workspace_id);
+  const canEditTitle = canSaveVersion;
+  const titleSessionKey = useRef<string | null>(null);
+  const [titleDrafts, setTitleDrafts] = useState<TitleDraft[]>([]);
+  const [titleDraftWarning, setTitleDraftWarning] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!canSaveVersion) { setTitleDrafts([]); return; }
+    try {
+      setTitleDrafts(readTitleDrafts(window.localStorage, currentUserId, page.id).filter((draft) => draft.key !== titleSessionKey.current && draft.title !== page.title));
+    } catch {
+      setTitleDraftWarning("브라우저 저장소를 사용할 수 없습니다. 이동하기 전에 제목을 버전으로 기록해 주세요.");
+    }
+  }, [canSaveVersion, currentUserId, page.id, page.title]);
 
   const blockedParents = useMemo(() => {
     const blocked = new Set([page.id]);
@@ -82,8 +101,12 @@ export default function Workbench({ page, pages, revisions, workspaceName, tree,
     return blocked;
   }, [page.id, pages]);
 
+  function handleCollaborationStatus(detail: CollaborationStatusDetail) {
+    setCollaborationBlocked(detail.status !== "live");
+  }
+
   function requestSave() {
-    if (!canSaveVersion || save === "saving") return;
+    if (!canSaveVersion || save === "saving" || collaborationBlocked || !collaborationHandshakeDone) return;
     const next = { ...latest.current, title: latest.current.title.trim() || "제목 없는 문서" };
     if (needsReason(page, next)) {
       setAskReason(true);
@@ -93,15 +116,16 @@ export default function Workbench({ page, pages, revisions, workspaceName, tree,
   }
 
   async function saveVersion(reason = "") {
-    if (!canSaveVersion) return;
+    if (!canSaveVersion || collaborationBlocked || !collaborationHandshakeDone || save === "saving") return;
     const next = { ...latest.current, title: latest.current.title.trim() || "제목 없는 문서" };
     latest.current = next;
     setSave("saving");
-    const { error } = await createClient().rpc("save_page_version", { target_page_id: page.id, next_title: next.title, next_content: next.content, change_reason: reason });
+    const { error } = await createBrowserEngine().revisions.save({ pageId: page.id, title: next.title, content: next.content, reason });
     if (error) {
       setSave("error");
       return;
     }
+    try { clearRecordedTitleDrafts(window.localStorage, currentUserId, page.id, next.title); } catch { /* leave an extra recovery copy if cleanup is unavailable */ }
     setAskReason(false);
     setSaveReason("");
     setSave("saved");
@@ -112,7 +136,7 @@ export default function Workbench({ page, pages, revisions, workspaceName, tree,
   async function saveReasonDraft() {
     if (!reasonDraft) return;
     setSavingReason(true);
-    const { error } = await createClient().from("page_revisions").update({ reason: reasonDraft.text.trim() || null }).eq("id", reasonDraft.id);
+    const { error } = await createBrowserEngine().revisions.setReason(reasonDraft.id, reasonDraft.text);
     setSavingReason(false);
     if (error) {
       setSave("error");
@@ -130,7 +154,7 @@ export default function Workbench({ page, pages, revisions, workspaceName, tree,
   async function restoreVersion() {
     if (!restoreRevision) return;
     setRestoring(true);
-    const { error } = await createClient().rpc("restore_page_revision", { target_page_id: page.id, source_revision_id: restoreRevision.id, change_reason: restoreReason });
+    const { error } = await createBrowserEngine().revisions.restore({ pageId: page.id, revisionId: restoreRevision.id, reason: restoreReason });
     if (error) {
       setSave("error");
       setRestoring(false);
@@ -140,7 +164,16 @@ export default function Workbench({ page, pages, revisions, workspaceName, tree,
   }
 
   function changeTitle(nextTitle: string) {
+    if (!canEditTitle) return;
     setTitle(nextTitle);
+    try {
+      titleSessionKey.current ??= titleDraftKey(currentUserId, page.id, crypto.randomUUID());
+      if (!writeTitleDraft(window.localStorage, titleSessionKey.current, nextTitle)) throw new Error("title draft storage unavailable");
+      setTitleDraftWarning(null);
+    } catch {
+      setTitleDraftWarning("제목 초안을 보관하지 못했습니다. 이동하기 전에 버전으로 기록해 주세요.");
+    }
+    setTitleDrafts((previous) => previous.filter((draft) => draft.title !== nextTitle));
     latest.current = { ...latest.current, title: nextTitle.trim() || "제목 없는 문서" };
     setSave("live");
   }
@@ -148,7 +181,7 @@ export default function Workbench({ page, pages, revisions, workspaceName, tree,
   async function transferOwnership() {
     if (!nextOwnerId) return;
     setTransferring(true);
-    const { error } = await createClient().rpc("transfer_page_ownership", { target_page_id: page.id, next_owner_id: nextOwnerId });
+    const { error } = await createBrowserEngine().pages.transferOwnership(page.id, nextOwnerId);
     if (error) { setSave("error"); setTransferring(false); return; }
     setTransferOpen(false);
     setTransferring(false);
@@ -158,10 +191,7 @@ export default function Workbench({ page, pages, revisions, workspaceName, tree,
   async function moveTo(nextParentId: string) {
     const previous = parentId;
     setParentId(nextParentId);
-    const { error } = await createClient()
-      .from("pages")
-      .update({ parent_id: nextParentId || null, position: Date.now() })
-      .eq("id", page.id);
+    const { error } = await createBrowserEngine().pages.move({ pageId: page.id, parentId: nextParentId || null });
     if (error) {
       setParentId(previous);
       setSave("error");
@@ -171,26 +201,26 @@ export default function Workbench({ page, pages, revisions, workspaceName, tree,
   }
 
   async function trashPage() {
-    const { error } = await createClient().rpc("trash_page", { target_page_id: page.id });
+    const { error } = await createBrowserEngine().pages.trash(page.id);
     if (error) {
       setSave("error");
       setConfirmTrash(false);
       return;
     }
-    router.push("/space");
+    router.push(workspaceHref("/space", page.workspace_id));
   }
 
   return (
     <div className="workbench surface">
       <header className="bar">
-        <Link className="bar-mark" href="/space"><BrandMark size={28} /></Link>
-        <nav className="crumb" aria-label="문서 위치"><Link href="/space">{workspaceName}</Link><span aria-hidden="true"> /</span><b>{title}</b></nav>
+        <Link className="bar-mark" href={workspaceHref("/space", page.workspace_id)}><BrandMark size={28} /></Link>
+        <nav className="crumb" aria-label="문서 위치"><Link href={workspaceHref("/space", page.workspace_id)}>{workspaceName}</Link><span aria-hidden="true"> /</span><b>{title}</b></nav>
         <div className="bar-right">
           <span className={`save is-${save}`} role="status" aria-live="polite"><span className="save-dot" aria-hidden="true" />{SAVE_WORD[save]}</span>
-          <button type="button" className="ctl ctl-key" title={canSaveVersion ? "이 상태를 새 버전으로 기록" : "문서 소유자만 버전을 저장할 수 있습니다"} onClick={requestSave} disabled={save === "saving" || !canSaveVersion}>저장</button>
+          <button type="button" className="ctl ctl-key" title={collaborationBlocked ? "공동 편집 연결과 초안 저장이 완료된 뒤 버전을 기록할 수 있습니다" : !canSaveVersion ? "문서 소유자만 버전을 저장할 수 있습니다" : !collaborationHandshakeDone ? "공동 편집을 연결하는 중입니다" : "이 상태를 새 버전으로 기록"} onClick={requestSave} disabled={save === "saving" || !canSaveVersion || collaborationBlocked || !collaborationHandshakeDone}>저장</button>
           <button type="button" className="ctl panel-toggle panel-toggle-history" aria-pressed={histOpen} onClick={() => setHistOpen((open) => !open)}>이력</button>
           <button type="button" className="ctl panel-toggle panel-toggle-tree" aria-pressed={treeOpen} onClick={() => setTreeOpen((open) => !open)}>문서 목록</button>
-          <Link href="/search" className="ctl" aria-label="검색" title="검색 (Ctrl/⌘ K)"><Search size={16} /></Link>
+          <Link href={workspaceHref("/search", page.workspace_id)} className="ctl" aria-label="검색" title="검색 (Ctrl/⌘ K)"><Search size={16} /></Link>
           <button type="button" className="ctl" onClick={() => setShareOpen(true)}><Share size={15} />공유</button>
           <button type="button" className="ctl" aria-label={dark ? "밝은 화면으로" : "어두운 화면으로"} title={dark ? "밝은 화면으로" : "어두운 화면으로"} onClick={toggleDark}>{dark ? <Sun size={16} /> : <Moon size={16} />}</button>
           <NotificationBell />
@@ -214,19 +244,21 @@ export default function Workbench({ page, pages, revisions, workspaceName, tree,
           onEdit={(nextContent) => {
             setContent(nextContent);
             latest.current = { ...latest.current, content: nextContent };
+            if (!collaborationHandshakeDone) setCollaborationHandshakeDone(true);
             setSave("live");
           }}
           seedComments={commentThreads}
           pageId={page.id}
           workspaceId={page.workspace_id}
           currentUser={{ id: currentUserId, name: currentUserName }}
-          header={<><input className="doc-title-input" aria-label="문서 제목" value={title} onChange={(event) => changeTitle(event.target.value)} /><div className="doc-meta doc-controls"><span>버전 소유자: {documentOwnerName}</span>{canSaveVersion && <button type="button" className="ctl" onClick={() => setTransferOpen(true)}>소유권 이전</button>}<label>상위 문서<select value={parentId} onChange={(event) => moveTo(event.target.value)}><option value="">최상위</option>{pages.filter((candidate) => !blockedParents.has(candidate.id)).map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.title}</option>)}</select></label><button type="button" className="ctl ctl-danger" onClick={() => setConfirmTrash(true)}><Trash size={15} />휴지통</button></div></>}
+          onCollaborationStatus={handleCollaborationStatus}
+          header={<><input className="doc-title-input" aria-label="문서 제목" title={canEditTitle ? undefined : "문서 소유자만 제목을 바꿀 수 있습니다"} value={title} disabled={!canEditTitle} onChange={(event) => changeTitle(event.target.value)} />{titleDraftWarning && <p className="space-error" role="alert">{titleDraftWarning}</p>}{title !== page.title && <p className="doc-meta">제목은 버전을 기록할 때 서버에 저장됩니다.</p>}{titleDrafts.length > 0 && <div role="status"><p>이전에 기록하지 않은 제목 초안이 있습니다.</p>{titleDrafts.map((draft) => <button type="button" className="ctl" key={draft.key} onClick={() => changeTitle(draft.title)}>제목 불러오기: {draft.title || "제목 없는 문서"}</button>)}</div>}<div className="doc-meta doc-controls"><span>버전 소유자: {documentOwnerName}</span>{canSaveVersion && <button type="button" className="ctl" onClick={() => setTransferOpen(true)}>소유권 이전</button>}<label>상위 문서<select value={parentId} disabled={!canEdit} title={canEdit ? undefined : "편집 권한이 있어야 문서를 옮길 수 있습니다"} onChange={(event) => moveTo(event.target.value)}><option value="">최상위</option>{pages.filter((candidate) => !blockedParents.has(candidate.id)).map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.title}</option>)}</select></label>{canEdit && <button type="button" className="ctl ctl-danger" onClick={() => setConfirmTrash(true)}><Trash size={15} />휴지통</button>}</div></>}
         />
       </main>
 
       <aside className="panel panel-tree" data-open={treeOpen} aria-label="스페이스와 페이지"><div className="panel-head">문서 목록</div><div className="panel-body"><Tree nodes={tree} activeId={page.id} /></div></aside>
       {shareOpen && <ShareDialog workspaceId={page.workspace_id} members={workspaceMembers} currentUserId={currentUserId} canManage={canManageSharing} canGrantAdmin={canGrantAdmin} onClose={() => setShareOpen(false)} />}
-      {transferOpen && <Modal className="trash-confirm" labelledBy="transfer-title" onClose={() => { if (!transferring) setTransferOpen(false); }}><div className="modal-head"><h2 id="transfer-title">문서 소유권 이전</h2></div><div className="modal-body"><p>새 소유자는 버전을 저장하고 과거 버전을 복원할 수 있습니다. 공동 편집 권한은 그대로 유지됩니다.</p><label className="auth-field">새 소유자<select className="modal-input" value={nextOwnerId} onChange={(event) => setNextOwnerId(event.target.value)}><option value="">선택하세요</option>{workspaceMembers.filter((member) => member.userId !== currentUserId && member.role !== "viewer").map((member) => <option key={member.userId} value={member.userId}>{member.name} · {member.role}</option>)}</select></label></div><div className="modal-foot"><button type="button" className="ctl" disabled={transferring} onClick={() => setTransferOpen(false)}>취소</button><button type="button" className="ctl ctl-key" disabled={!nextOwnerId || transferring} onClick={transferOwnership}>{transferring ? "이전 중…" : "소유권 이전"}</button></div></Modal>}
+      {transferOpen && <Modal className="trash-confirm" labelledBy="transfer-title" onClose={() => { if (!transferring) setTransferOpen(false); }}><div className="modal-head"><h2 id="transfer-title">문서 소유권 이전</h2></div><div className="modal-body"><p>새 소유자는 버전을 저장하고 과거 버전을 복원할 수 있습니다. 공동 편집 권한은 그대로 유지됩니다.</p><label className="auth-field">새 소유자<select className="modal-input" value={nextOwnerId} onChange={(event) => setNextOwnerId(event.target.value)}><option value="">선택하세요</option>{workspaceMembers.filter((member) => member.userId !== currentUserId && member.canEdit).map((member) => <option key={member.userId} value={member.userId}>{member.name} · {member.roleName || member.role}</option>)}</select></label></div><div className="modal-foot"><button type="button" className="ctl" disabled={transferring} onClick={() => setTransferOpen(false)}>취소</button><button type="button" className="ctl ctl-key" disabled={!nextOwnerId || transferring} onClick={transferOwnership}>{transferring ? "이전 중…" : "소유권 이전"}</button></div></Modal>}
       {compareRevision && <Modal className="revision-modal" labelledBy="revision-diff-title" onClose={() => setCompareRevision(null)}><div className="modal-head"><div><h2 id="revision-diff-title">v{compareRevision.version}과 현재 저장본 비교</h2><p className="revision-note">삭제된 내용은 주황색, 추가된 내용은 파란색으로 표시됩니다.</p></div><button type="button" className="ctl" onClick={() => setCompareRevision(null)} aria-label="닫기">×</button></div><div className="modal-body revision-diff"><div><p className="modal-label">v{compareRevision.version} · {compareRevision.title}</p><pre>{documentText(compareRevision.content)}</pre></div><div><p className="modal-label">현재 저장본 · {page.title}</p><pre>{documentText(page.content)}</pre></div><div className="revision-changes"><p className="modal-label">변경 내용</p><TextDiff before={documentText(compareRevision.content)} after={documentText(page.content)} /></div></div><div className="modal-foot"><button type="button" className="ctl" onClick={() => setCompareRevision(null)}>닫기</button><button type="button" className="ctl ctl-key" disabled={!canSaveVersion} title={canSaveVersion ? undefined : "문서 소유자만 복원할 수 있습니다"} onClick={() => { if (!canSaveVersion) return; setRestoreRevision(compareRevision); setCompareRevision(null); }}><Restore size={15} />이 버전 복원</button></div></Modal>}
       {askReason && <Modal className="trash-confirm" labelledBy="reason-title" onClose={() => { if (save !== "saving") setAskReason(false); }}><div className="modal-head"><h2 id="reason-title">왜 바꿨나요?</h2></div><div className="modal-body"><p>제목이 바뀌었거나 내용이 줄어든 판입니다. 무엇이 바뀌었는지는 어차피 저장되니, 나중에 이 판을 여는 사람이 궁금해할 건 이유 쪽입니다.</p><label className="auth-field">변경 이유 <span className="revision-optional">지금 비워도 이력에서 나중에 채울 수 있습니다</span><input className="modal-input" autoFocus value={saveReason} placeholder="예: 이 절차는 2월 배포부터 쓰지 않아서 지움" onChange={(event) => setSaveReason(event.target.value)} /></label></div><div className="modal-foot"><button type="button" className="ctl" disabled={save === "saving"} onClick={() => saveVersion()}>이유 없이 저장</button><button type="button" className="ctl ctl-key" disabled={save === "saving"} onClick={() => saveVersion(saveReason)}>{save === "saving" ? "저장 중…" : "이유와 함께 저장"}</button></div></Modal>}
       {restoreRevision && <Modal className="trash-confirm" labelledBy="restore-title" onClose={() => { if (!restoring) closeRestore(); }}><div className="modal-head"><h2 id="restore-title">v{restoreRevision.version}으로 복원할까요?</h2></div><div className="modal-body"><p>현재 내용은 삭제되지 않습니다. v{restoreRevision.version}의 내용이 새 버전으로 저장되어 이력에 남습니다.</p><label className="auth-field">왜 되돌리나요? <span className="revision-optional">비워 두어도 복원됩니다</span><input className="modal-input" value={restoreReason} placeholder="예: 삭제된 예외 처리 문단이 여전히 유효해서" onChange={(event) => setRestoreReason(event.target.value)} /></label></div><div className="modal-foot"><button type="button" className="ctl" disabled={restoring} onClick={closeRestore}>취소</button><button type="button" className="ctl ctl-key" autoFocus disabled={restoring} onClick={restoreVersion}><Restore size={15} />{restoring ? "복원 중…" : "새 버전으로 복원"}</button></div></Modal>}

@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import LoginForm from "./LoginForm";
@@ -7,11 +8,12 @@ export const metadata: Metadata = {
   title: "로그인 — Hestia",
 };
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   // LoginForm reads ?next= to send you back where you were headed
   return (
     <Suspense>
-      <LoginForm />
+      <LoginForm nonce={nonce} />
     </Suspense>
   );
 }

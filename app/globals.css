@@ -2,136 +2,119 @@
 @import url("https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap");
 
 :root {
-  /* paper — default reading surface for the product and landing */
-  --abyss: #f7fafc;
-  --deep: #edf5f8;
-  --current: #e4f0f5;
-  --shelf: #d4e7ee;
+  color-scheme: light;
+  /* Calm editorial paper & stone surfaces */
+  --abyss: #f7f7f4;
+  --deep: #efefeb;
+  --current: #e6e6e0;
+  --shelf: #dadad2;
 
-  /* living light — what is happening now */
-  --plankton: #1674a0;
-  --wake: #006f8e;
-  --trace: #0a6a86;
+  /* Primary accent (#28766E) — living state */
+  --plankton: #28766e;
+  --wake: #28766e;
+  --trace: #1f5f58;
 
-  /* kept light — what Hestia refuses to let go */
-  --amber: #9a5708;
-  --amber-deep: #75410a;
+  /* History & change reason — low-saturation warm amber */
+  --amber: #8f5b14;
+  --amber-deep: #70460d;
 
-  /* ink */
-  --foam: #10202a;
-  --foam-dim: #435b6a;
-  --foam-faint: #607887;
+  /* Ink */
+  --foam: #242826;
+  --foam-dim: #4e5551;
+  --foam-faint: #6d7570;
 
-  --edge: rgba(10, 106, 134, 0.25);
-  --edge-soft: rgba(10, 106, 134, 0.12);
+  --edge: #d4d4cc;
+  --edge-soft: #e4e4dc;
 
-  /* control surfaces — the opaque base the canvas must not bleed through,
-     and the wash/lift each theme uses to say "you are touching this" */
-  --control-base: rgba(255, 255, 255, 0.9);
-  --control-wash: rgba(0, 111, 142, 0.1);
-  --control-wash-amber: rgba(154, 87, 8, 0.09);
-  --control-lift: 0 10px 20px rgba(10, 106, 134, 0.1);
-  --control-lift-amber: 0 10px 20px rgba(154, 87, 8, 0.1);
-  --rim-mute: rgba(96, 120, 135, 0.35);
-  --field-base: rgba(255, 255, 255, 0.88);
-  --field-glow: 0 8px 18px rgba(0, 111, 142, 0.12);
+  /* Control surfaces — clean borders, no neon lift */
+  --control-base: #ffffff;
+  --control-wash: rgba(40, 118, 110, 0.08);
+  --control-wash-amber: rgba(143, 91, 20, 0.08);
+  --control-lift: 0 2px 6px rgba(36, 40, 38, 0.06);
+  --control-lift-amber: 0 2px 6px rgba(143, 91, 20, 0.08);
+  --rim-mute: rgba(109, 117, 112, 0.35);
+  --field-base: #ffffff;
+  --field-glow: 0 0 0 3px rgba(40, 118, 110, 0.14);
 
-  /* the veil under the fixed nav */
-  --scrim: rgba(247, 250, 252, 0.96);
-  --scrim-fade: rgba(247, 250, 252, 0);
+  /* Fixed nav scrim */
+  --scrim: rgba(247, 247, 244, 0.96);
+  --scrim-fade: rgba(247, 247, 244, 0);
 
-  /* daylight — the paper world's replacement for the canvas glow.
-     On dark these are transparent: the wake itself lights the page. */
-  --daylight-cool: rgba(169, 222, 237, 0.46);
-  --daylight-warm: rgba(248, 211, 155, 0.23);
+  --daylight-cool: transparent;
+  --daylight-warm: transparent;
 
   --alarm: #b3261e;
 
-  /* section surfaces and marks — paper has no glow, so these carry the same
-     meaning with fill and elevation instead */
-  --doc-surface: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.9),
-    rgba(228, 240, 245, 0.78)
-  );
-  --amber-dot: rgba(154, 87, 8, 0.16);
-  --wake-dot-glow: 0 0 0.75rem rgba(0, 111, 142, 0.34);
-  --amber-mark-glow: 0 0 0.55rem rgba(154, 87, 8, 0.38);
-  --finder-glow: 0 8px 18px rgba(0, 111, 142, 0.12);
-  --mark-glow: 0 0 0.7rem rgba(0, 111, 142, 0.28);
+  --doc-surface: #ffffff;
+  --amber-dot: rgba(143, 91, 20, 0.16);
+  --wake-dot-glow: none;
+  --amber-mark-glow: none;
+  --finder-glow: 0 0 0 3px rgba(40, 118, 110, 0.12);
+  --mark-glow: none;
   --hero-glow-now: none;
   --hero-glow-kept: none;
-  /* the live end of the version rail's thread, where amber cools into now */
-  --rail-live: rgba(10, 106, 134, 0.35);
+  --rail-live: rgba(40, 118, 110, 0.4);
 
-  /* the two dimmed reading states, tinted rather than faded */
-  --foam-cut: #627b89;
-  --foam-cut-line: rgba(98, 123, 137, 0.55);
-  --foam-rest: #526c7a;
-  --foam-note: #607887;
+  --foam-cut: #6d7570;
+  --foam-cut-line: rgba(109, 117, 112, 0.55);
+  --foam-rest: #565e59;
+  --foam-note: #6d7570;
 
-  --measure: 34rem;
+  --measure: 38rem;
   --gutter: clamp(1.25rem, 5vw, 6rem);
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 [data-theme="dark"] {
-  --abyss: #05070b;
-  --deep: #081222;
-  --current: #0d2138;
-  --shelf: #12304d;
-  --plankton: #1e90ff;
-  --wake: #00e5ff;
-  --trace: #4bd6ff;
-  --amber: #f5a83c;
-  --amber-deep: #b76f18;
-  --foam: #d6e8f5;
-  --foam-dim: #9dbcd2;
-  --foam-faint: #86a7be;
-  --edge: rgba(75, 214, 255, 0.22);
-  --edge-soft: rgba(75, 214, 255, 0.1);
+  color-scheme: dark;
+  /* Neutral charcoal dark mode */
+  --abyss: #171918;
+  --deep: #1e2120;
+  --current: #252927;
+  --shelf: #2f3432;
+  --plankton: #4bb3a7;
+  --wake: #4bb3a7;
+  --trace: #67c4b9;
+  --amber: #d8a24a;
+  --amber-deep: #a8792c;
+  --foam: #ecedec;
+  --foam-dim: #a8b0ac;
+  --foam-faint: #7d8581;
+  --edge: #353b38;
+  --edge-soft: #2a2f2d;
 
-  --control-base: rgba(7, 13, 22, 0.94);
-  --control-wash: rgba(0, 229, 255, 0.12);
-  --control-wash-amber: rgba(245, 168, 60, 0.14);
-  --control-lift:
-    0 0 1.5rem rgba(0, 229, 255, 0.35),
-    inset 0 0 2rem rgba(0, 229, 255, 0.12);
-  --control-lift-amber:
-    0 0 1.5rem rgba(245, 168, 60, 0.32),
-    inset 0 0 2rem rgba(245, 168, 60, 0.1);
-  --rim-mute: rgba(125, 160, 185, 0.35);
-  --field-base: rgba(7, 15, 28, 0.93);
-  --field-glow: 0 0 1.2rem rgba(0, 229, 255, 0.25);
+  --control-base: #1e2120;
+  --control-wash: rgba(75, 179, 167, 0.12);
+  --control-wash-amber: rgba(216, 162, 74, 0.12);
+  --control-lift: 0 2px 8px rgba(0, 0, 0, 0.28);
+  --control-lift-amber: 0 2px 8px rgba(0, 0, 0, 0.28);
+  --rim-mute: rgba(125, 133, 129, 0.35);
+  --field-base: #1e2120;
+  --field-glow: 0 0 0 3px rgba(75, 179, 167, 0.2);
 
-  --scrim: rgba(5, 7, 11, 0.96);
-  --scrim-fade: rgba(5, 7, 11, 0);
+  --scrim: rgba(23, 25, 24, 0.96);
+  --scrim-fade: rgba(23, 25, 24, 0);
 
-  /* the canvas does this job on dark, so the paper glow stands down */
   --daylight-cool: transparent;
   --daylight-warm: transparent;
 
-  --alarm: #ff9a86;
+  --alarm: #f28b82;
 
-  --doc-surface: linear-gradient(
-    to bottom,
-    rgba(13, 33, 56, 0.55),
-    rgba(8, 18, 34, 0.4)
-  );
-  --amber-dot: rgba(245, 168, 60, 0.28);
-  --wake-dot-glow: 0 0 0.9rem rgba(0, 229, 255, 0.75);
-  --amber-mark-glow: 0 0 0.7rem rgba(245, 168, 60, 0.6);
-  --finder-glow: 0 0 1.4rem rgba(0, 229, 255, 0.22);
-  --mark-glow: 0 0 0.85rem rgba(0, 229, 255, 0.75);
-  --hero-glow-now: 0 0 2.5rem rgba(0, 229, 255, 0.18);
-  --hero-glow-kept: 0 0 2.5rem rgba(245, 168, 60, 0.28);
-  --rail-live: rgba(75, 214, 255, 0.35);
+  --doc-surface: #1e2120;
+  --amber-dot: rgba(216, 162, 74, 0.24);
+  --wake-dot-glow: none;
+  --amber-mark-glow: none;
+  --finder-glow: 0 0 0 3px rgba(75, 179, 167, 0.2);
+  --mark-glow: none;
+  --hero-glow-now: none;
+  --hero-glow-kept: none;
+  --rail-live: rgba(75, 179, 167, 0.4);
 
-  --foam-cut: rgba(125, 176, 205, 0.62);
-  --foam-cut-line: rgba(125, 176, 205, 0.45);
-  --foam-rest: #7f9fb6;
-  --foam-note: #8fafc6;
+  --foam-cut: #7d8581;
+  --foam-cut-line: rgba(125, 133, 129, 0.5);
+  --foam-rest: #919a95;
+  --foam-note: #7d8581;
 }
 
 *,
@@ -149,16 +132,16 @@ body {
   margin: 0;
   background: var(--abyss);
   color: var(--foam);
-  font-family: "SUIT Variable", Jost, system-ui, sans-serif;
+  font-family: "SUIT Variable", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-weight: 400;
-  font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.0625rem);
+  font-size: 1.03125rem; /* 16.5px — inside 16~17px spec */
   line-height: 1.75;
   letter-spacing: -0.01em;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-/* the sea sits behind everything, always */
+/* Keep the sea canvas only as a very subtle ambient element on the landing page */
 .sea {
   position: fixed;
   inset: 0;
@@ -166,6 +149,7 @@ body {
   display: block;
   width: 100%;
   height: 100%;
+  opacity: 0.22;
   pointer-events: none;
 }
 
@@ -179,27 +163,27 @@ body {
 h1,
 h2,
 h3 {
-  font-weight: 250;
-  letter-spacing: -0.035em;
-  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.22;
   text-wrap: balance;
   margin: 0;
 }
 
 .display {
-  font-size: clamp(2.6rem, 1.2rem + 6vw, 6rem);
+  font-size: clamp(2.25rem, 1.4rem + 3.6vw, 4.25rem);
 }
 
 .section-head {
-  font-size: clamp(1.9rem, 1.1rem + 3.2vw, 3.6rem);
+  font-size: clamp(1.65rem, 1.15rem + 2.1vw, 2.65rem);
 }
 
 .lead {
   max-width: var(--measure);
   color: var(--foam-dim);
-  font-weight: 350;
-  font-size: clamp(1rem, 0.95rem + 0.35vw, 1.2rem);
-  line-height: 1.7;
+  font-weight: 400;
+  font-size: clamp(1rem, 0.96rem + 0.25vw, 1.125rem);
+  line-height: 1.75;
 }
 
 .kept {
@@ -211,8 +195,8 @@ h3 {
 }
 
 .latin {
-  font-family: Jost, sans-serif;
-  font-weight: 300;
+  font-family: Jost, "SUIT Variable", sans-serif;
+  font-weight: 400;
 }
 
 /* ---------- rhythm ---------- */
@@ -222,17 +206,17 @@ section {
 }
 
 .band {
-  padding-block: clamp(7rem, 14vh, 12rem) clamp(4rem, 8vh, 7rem);
-  max-width: 78rem;
+  padding-block: clamp(5.5rem, 11vh, 9rem) clamp(3.5rem, 7vh, 5.5rem);
+  max-width: 72rem;
   margin-inline: auto;
 }
 
 .band > .lead {
-  margin-top: 1.5rem;
+  margin-top: 1.1rem;
 }
 
 .band-body {
-  margin-top: clamp(3rem, 6vh, 5rem);
+  margin-top: clamp(2.25rem, 4.5vh, 3.5rem);
 }
 
 /* ---------- nav ---------- */
@@ -243,22 +227,12 @@ section {
   z-index: 20;
   display: flex;
   align-items: center;
-  gap: clamp(1rem, 4vw, 3rem);
-  padding: 1.1rem var(--gutter);
-}
-
-/* the veil is a layer of its own so it can fade out without taking the
-   nav's own text with it */
-.nav::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(to bottom, var(--scrim) 40%, var(--scrim-fade));
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  mask-image: linear-gradient(to bottom, #000 55%, transparent);
-  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  gap: clamp(1rem, 3vw, 2.5rem);
+  padding: 0.9rem var(--gutter);
+  border-bottom: 1px solid var(--edge-soft);
+  background: var(--scrim);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .brand-mark {
@@ -268,50 +242,59 @@ section {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.7rem;
-  font-family: Jost, sans-serif;
-  font-weight: 300;
+  gap: 0.65rem;
+  font-family: Jost, "SUIT Variable", sans-serif;
+  font-weight: 500;
   font-size: 0.95rem;
-  letter-spacing: 0.42em;
-  text-indent: 0.42em;
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
   color: var(--foam);
   text-decoration: none;
 }
 
 .nav-links {
   display: flex;
-  gap: clamp(1rem, 2.5vw, 2.2rem);
+  align-items: center;
+  gap: clamp(1rem, 2.2vw, 1.85rem);
   margin-left: auto;
-  font-size: 0.78rem;
-  letter-spacing: 0.16em;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
 }
 
 .nav-links a {
-  color: var(--foam-faint);
+  color: var(--foam-dim);
   text-decoration: none;
-  transition: color 0.4s var(--ease);
+  padding: 0.35rem 0.55rem;
+  border-radius: 6px;
+  transition: color 0.18s var(--ease), background 0.18s var(--ease);
 }
 
 .nav-links a:hover {
   color: var(--wake);
+  background: var(--control-wash);
 }
 
 .landing-theme-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 2.125rem;
+  height: 2.125rem;
   padding: 0;
   border: 1px solid var(--edge);
-  border-radius: 2px;
-  background: transparent;
-  color: var(--foam-faint);
+  border-radius: 6px;
+  background: var(--control-base);
+  color: var(--foam-dim);
   cursor: pointer;
-  transition: color 0.4s var(--ease), border-color 0.4s var(--ease), background 0.4s var(--ease);
+  transition: color 0.18s var(--ease), border-color 0.18s var(--ease), background 0.18s var(--ease);
 }
 
-.landing-theme-toggle:hover { color: var(--wake); border-color: var(--wake); }
+.landing-theme-toggle:hover {
+  color: var(--wake);
+  border-color: var(--wake);
+  background: var(--control-wash);
+}
 
 /* ---------- controls ---------- */
 
@@ -321,108 +304,79 @@ section {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.7rem;
-  padding: 0.85rem 1.6rem;
+  gap: 0.55rem;
+  padding: 0.7rem 1.35rem;
   border: 1px solid var(--glow);
-  border-radius: 2px;
-  /* an opaque base, and no fill tint: the control is dark and defined by its
-     lit rim, not by a coloured slab. Without the opaque base the wake behind
-     the page bleeds through and the button reads a different colour at every
-     scroll position. */
-  background: var(--control-base);
-  color: var(--foam);
+  border-radius: 6px;
+  background: var(--wake);
+  color: #ffffff;
   font: inherit;
-  font-size: 0.85rem;
-  letter-spacing: 0.16em;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
-  isolation: isolate;
   box-shadow: none;
   transition:
-    box-shadow 0.5s var(--ease),
-    background 0.5s var(--ease),
-    color 0.5s var(--ease);
+    background 0.18s var(--ease),
+    border-color 0.18s var(--ease),
+    color 0.18s var(--ease),
+    filter 0.18s var(--ease);
 }
 
-/* Touching the control disturbs the water inside it. Authored dot field,
-   masked and tinted by the button's own glow — the same plankton the canvas
-   ignites, not a gradient sheen. */
-.btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: var(--glow);
-  opacity: 0;
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 50'%3E%3Cg fill='%23fff'%3E%3Ccircle cx='9' cy='33' r='1.7' opacity='.9'/%3E%3Ccircle cx='18' cy='14' r='1' opacity='.6'/%3E%3Ccircle cx='27' cy='40' r='.8' opacity='.5'/%3E%3Ccircle cx='34' cy='22' r='1.9' opacity='.85'/%3E%3Ccircle cx='45' cy='8' r='1.1' opacity='.55'/%3E%3Ccircle cx='52' cy='36' r='1.4' opacity='.75'/%3E%3Ccircle cx='61' cy='19' r='.9' opacity='.5'/%3E%3Ccircle cx='69' cy='44' r='1.6' opacity='.8'/%3E%3Ccircle cx='77' cy='11' r='1.2' opacity='.65'/%3E%3Ccircle cx='84' cy='29' r='2' opacity='.9'/%3E%3Ccircle cx='93' cy='6' r='.8' opacity='.45'/%3E%3Ccircle cx='101' cy='38' r='1.3' opacity='.7'/%3E%3Ccircle cx='110' cy='17' r='1.7' opacity='.85'/%3E%3Ccircle cx='118' cy='45' r='.9' opacity='.5'/%3E%3Ccircle cx='126' cy='25' r='1.5' opacity='.78'/%3E%3Ccircle cx='135' cy='9' r='1.1' opacity='.6'/%3E%3Ccircle cx='143' cy='34' r='1.8' opacity='.88'/%3E%3Ccircle cx='152' cy='20' r='.85' opacity='.5'/%3E%3Ccircle cx='160' cy='42' r='1.2' opacity='.68'/%3E%3Ccircle cx='168' cy='13' r='1.6' opacity='.8'/%3E%3Ccircle cx='177' cy='31' r='1' opacity='.55'/%3E%3Ccircle cx='185' cy='7' r='1.4' opacity='.72'/%3E%3Ccircle cx='192' cy='39' r='1.9' opacity='.9'/%3E%3Ccircle cx='6' cy='18' r='1.2' opacity='.62'/%3E%3Ccircle cx='40' cy='47' r='1' opacity='.5'/%3E%3Ccircle cx='73' cy='27' r='1.3' opacity='.7'/%3E%3Ccircle cx='107' cy='48' r='1.1' opacity='.58'/%3E%3Ccircle cx='140' cy='16' r='.9' opacity='.5'/%3E%3Ccircle cx='174' cy='24' r='1.7' opacity='.82'/%3E%3Ccircle cx='198' cy='15' r='1' opacity='.55'/%3E%3C/g%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 50'%3E%3Cg fill='%23fff'%3E%3Ccircle cx='9' cy='33' r='1.7' opacity='.9'/%3E%3Ccircle cx='18' cy='14' r='1' opacity='.6'/%3E%3Ccircle cx='27' cy='40' r='.8' opacity='.5'/%3E%3Ccircle cx='34' cy='22' r='1.9' opacity='.85'/%3E%3Ccircle cx='45' cy='8' r='1.1' opacity='.55'/%3E%3Ccircle cx='52' cy='36' r='1.4' opacity='.75'/%3E%3Ccircle cx='61' cy='19' r='.9' opacity='.5'/%3E%3Ccircle cx='69' cy='44' r='1.6' opacity='.8'/%3E%3Ccircle cx='77' cy='11' r='1.2' opacity='.65'/%3E%3Ccircle cx='84' cy='29' r='2' opacity='.9'/%3E%3Ccircle cx='93' cy='6' r='.8' opacity='.45'/%3E%3Ccircle cx='101' cy='38' r='1.3' opacity='.7'/%3E%3Ccircle cx='110' cy='17' r='1.7' opacity='.85'/%3E%3Ccircle cx='118' cy='45' r='.9' opacity='.5'/%3E%3Ccircle cx='126' cy='25' r='1.5' opacity='.78'/%3E%3Ccircle cx='135' cy='9' r='1.1' opacity='.6'/%3E%3Ccircle cx='143' cy='34' r='1.8' opacity='.88'/%3E%3Ccircle cx='152' cy='20' r='.85' opacity='.5'/%3E%3Ccircle cx='160' cy='42' r='1.2' opacity='.68'/%3E%3Ccircle cx='168' cy='13' r='1.6' opacity='.8'/%3E%3Ccircle cx='177' cy='31' r='1' opacity='.55'/%3E%3Ccircle cx='185' cy='7' r='1.4' opacity='.72'/%3E%3Ccircle cx='192' cy='39' r='1.9' opacity='.9'/%3E%3Ccircle cx='6' cy='18' r='1.2' opacity='.62'/%3E%3Ccircle cx='40' cy='47' r='1' opacity='.5'/%3E%3Ccircle cx='73' cy='27' r='1.3' opacity='.7'/%3E%3Ccircle cx='107' cy='48' r='1.1' opacity='.58'/%3E%3Ccircle cx='140' cy='16' r='.9' opacity='.5'/%3E%3Ccircle cx='174' cy='24' r='1.7' opacity='.82'/%3E%3Ccircle cx='198' cy='15' r='1' opacity='.55'/%3E%3C/g%3E%3C/svg%3E");
-  mask-size: 220% 130%;
-  -webkit-mask-size: 220% 130%;
-  transition: opacity 0.6s var(--ease);
-}
-
-.btn:hover:not(:disabled)::before,
-.btn:focus-visible::before {
-  opacity: 0.8;
-  animation: plankton-drift 11s linear infinite;
-}
-
-@keyframes plankton-drift {
-  from {
-    mask-position: 0% 50%;
-    -webkit-mask-position: 0% 50%;
-  }
-  to {
-    mask-position: 120% 50%;
-    -webkit-mask-position: 120% 50%;
-  }
+[data-theme="dark"] .btn {
+  color: #131817;
 }
 
 .btn:hover:not(:disabled) {
-  background:
-    linear-gradient(var(--control-wash), var(--control-wash)),
-    var(--control-base);
-  box-shadow: var(--control-lift);
+  filter: brightness(0.94);
 }
 
 .btn:disabled {
-  --glow: var(--rim-mute);
+  border-color: var(--edge);
   color: var(--foam-faint);
-  background: transparent;
+  background: var(--deep);
   cursor: not-allowed;
 }
 
 .btn-amber {
   --glow: var(--amber);
-}
-
-.btn-amber:hover:not(:disabled) {
-  background:
-    linear-gradient(var(--control-wash-amber), var(--control-wash-amber)),
-    var(--control-base);
-  box-shadow: var(--control-lift-amber);
+  background: var(--amber);
+  border-color: var(--amber);
 }
 
 .btn-ghost {
   border-color: var(--edge);
-  background: transparent;
+  background: var(--control-base);
+  color: var(--foam);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  border-color: var(--wake);
+  background: var(--control-wash);
+  color: var(--wake);
+  filter: none;
 }
 
 .shell input[type="email"],
 .shell input[type="text"] {
   width: 100%;
-  padding: 0.85rem 1.1rem;
+  padding: 0.7rem 0.95rem;
   border: 1px solid var(--edge);
-  border-radius: 2px;
+  border-radius: 6px;
   background: var(--field-base);
   color: var(--foam);
   font: inherit;
   font-size: 0.95rem;
   letter-spacing: 0;
   transition:
-    border-color 0.4s var(--ease),
-    box-shadow 0.5s var(--ease);
+    border-color 0.18s var(--ease),
+    box-shadow 0.18s var(--ease);
+}
+
+.shell input:user-invalid {
+  border-color: var(--alarm);
 }
 
 .shell input::placeholder {
@@ -437,7 +391,7 @@ section {
 
 .shell :focus-visible {
   outline: 2px solid var(--wake);
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
 
 /* ---------- shared surfaces ---------- */
@@ -445,15 +399,15 @@ section {
 .rule {
   height: 1px;
   border: 0;
-  background: linear-gradient(to right, var(--edge), transparent);
+  background: var(--edge-soft);
   margin: 0;
 }
 
 .label {
-  font-family: Jost, sans-serif;
-  font-size: 0.72rem;
-  font-weight: 400;
-  letter-spacing: 0.24em;
+  font-family: Jost, "SUIT Variable", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--foam-faint);
 }
@@ -461,38 +415,27 @@ section {
 .synthetic {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  color: var(--foam-faint);
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--edge);
+  background: var(--deep);
+  font-size: 0.78rem;
+  color: var(--foam-dim);
 }
 
 .synthetic::before {
   content: "";
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--amber-deep);
+  background: var(--amber);
 }
-
-/* ---------- paper landing ---------- */
 
 [data-theme="light"] .sea { display: none; }
 
 [data-theme="light"] .shell { isolation: isolate; }
-
-/* the only light-only rule left: the canvas is gone, so the paper needs its
-   own atmosphere. Everything else now comes from the tokens above. */
-[data-theme="light"] .shell::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(70rem 42rem at 92% 18%, var(--daylight-cool), transparent 66%),
-    radial-gradient(50rem 36rem at 77% 88%, var(--daylight-warm), transparent 68%);
-}
 
 @media (prefers-reduced-motion: reduce) {
   html {

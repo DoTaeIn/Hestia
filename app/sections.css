@@ -201,7 +201,8 @@
 }
 
 .hist-doc {
-  border: 1px solid var(--edge-soft);
+  border: 1px solid var(--edge);
+  border-radius: 8px;
   background: var(--doc-surface);
   padding: clamp(1.5rem, 3vw, 2.5rem);
 }
@@ -214,14 +215,14 @@
 .crumbs {
   margin: 0;
   font-size: 0.78rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   color: var(--foam-faint);
 }
 
 .hist-title {
   margin: 0.6rem 0 0.5rem;
-  font-size: clamp(1.35rem, 1.1rem + 1vw, 1.9rem);
-  font-weight: 300;
+  font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.75rem);
+  font-weight: 600;
   color: var(--foam);
 }
 
@@ -419,14 +420,15 @@
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  padding: 0.55rem 1.3rem;
+  padding: 0.55rem 1.1rem;
   border: 1px solid var(--edge);
+  border-radius: 8px;
   background: var(--field-base);
   color: var(--foam-faint);
   transition:
-    box-shadow 0.5s var(--ease),
-    border-color 0.4s var(--ease),
-    color 0.4s var(--ease);
+    box-shadow 0.2s var(--ease),
+    border-color 0.2s var(--ease),
+    color 0.2s var(--ease);
 }
 
 .finder-field:focus-within {
@@ -491,9 +493,12 @@
 }
 
 .beam mark {
-  background: none;
+  background: var(--control-wash);
   color: var(--wake);
-  text-shadow: var(--mark-glow);
+  font-weight: 600;
+  padding: 0.05em 0.25em;
+  border-radius: 4px;
+  text-shadow: none;
 }
 
 .finder-empty {

@@ -1,0 +1,3 @@
+-- Intentionally empty. Local startup must not create shared passwords,
+-- real-looking customers, or production-visible fixtures.
+-- Disposable service test data is created by npm run test:services.

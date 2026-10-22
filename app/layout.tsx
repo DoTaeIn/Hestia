@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./sections.css";
@@ -31,15 +32,16 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
  */
 const THEME_BOOT = `try{document.documentElement.dataset.theme=localStorage.getItem("hestia-theme")||"light"}catch(e){}`;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
     <html lang="ko" suppressHydrationWarning>
       <body>
-        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
         <span hidden dangerouslySetInnerHTML={{ __html: CONTRACT }} />
         {children}
       </body>

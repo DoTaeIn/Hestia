@@ -5,20 +5,29 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --test lib/*.test.ts"
+    "test": "node --test lib/*.test.ts engine/*.test.ts",
+    "test:services": "node scripts/test-local-services.mjs",
+    "test:services:cleanup": "node scripts/cleanup-local-services.mjs",
+    "typecheck": "next typegen && tsc --noEmit",
+    "release:preview": "node scripts/prepare-preview.mjs",
+    "security:audit": "npm audit --audit-level=moderate",
+    "test:roles:concurrency": "python3 scripts/test-role-concurrency.py",
+    "test:security:http": "node scripts/test-local-http.mjs",
+    "security:check": "node scripts/check-production-security.mjs",
+    "docs:build": "node scripts/build-docs.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.112.2",
-    "@tiptap/extension-collaboration": "^3.29.2",
-    "@tiptap/extension-image": "^3.29.2",
-    "@tiptap/extension-placeholder": "^3.29.2",
-    "@tiptap/extension-table": "^3.29.2",
-    "@tiptap/pm": "^3.29.2",
-    "@tiptap/react": "^3.29.2",
-    "@tiptap/starter-kit": "^3.29.2",
+    "@tiptap/extension-collaboration": "^3.32.0",
+    "@tiptap/extension-image": "^3.32.0",
+    "@tiptap/extension-placeholder": "^3.32.0",
+    "@tiptap/extension-table": "^3.32.0",
+    "@tiptap/pm": "^3.32.0",
+    "@tiptap/react": "^3.32.0",
+    "@tiptap/starter-kit": "^3.32.0",
     "lib0": "^0.2.117",
-    "next": "^15.5.4",
+    "next": "^15.5.28",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "y-protocols": "^1.0.7",
@@ -28,7 +37,17 @@
     "@types/node": "^24.5.2",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
+    "marked": "18.1.1",
     "playwright": "^1.62.1",
     "typescript": "^5.9.2"
+  },
+  "version": "0.1.0-preview.3",
+  "engines": {
+    "node": ">=24"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "^8.5.31"
+    }
   }
 }

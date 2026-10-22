@@ -1,3 +1,4 @@
+import { createServerAuth } from "@/lib/auth/server";
 import Link from "next/link";
 import Sea from "./Sea";
 import History from "./History";
@@ -11,7 +12,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export default async function Home() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: user } = await createServerAuth(supabase).getUser();
 
   return (
     <>
@@ -94,13 +95,13 @@ export default async function Home() {
 
           <section id="join" className="band close">
             <h2 className="section-head">
-              베타에 자리를
+              팀의 문서를
               <br />
-              맡아 두세요.
+              함께 써보세요.
             </h2>
             <p className="lead">
-              아직 만들고 있습니다. 열리는 날 한 번 알려 드리고, 그 외에는
-              메일을 보내지 않습니다.
+              Preview에 로그인해 워크스페이스를 만들고, 구성원과 함께
+              문서를 작성할 수 있습니다.
             </p>
             <div className="close-cta">
               <Waitlist id="close-wl" />

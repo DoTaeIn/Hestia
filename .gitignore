@@ -37,3 +37,15 @@ Thumbs.db
 
 # 외부 스킬 팩 — skills-lock.json 으로 재설치한다
 /.agents/
+
+# local integration evidence; never ship test sessions or generated artifacts
+/test-results/
+
+# generated source release archives
+/dist/
+
+# Legacy landing-page collection must never enter version control.
+/waitlist.jsonl
+
+# generated developer documentation site
+/docs-site/

@@ -1,0 +1,19 @@
+.members-page { min-height:100dvh; }
+.members-main { max-width:960px; margin:40px auto; padding:0 24px 48px; }
+.members-main h1 { font-size:1.6rem; }
+.members-card { margin-top:24px; padding:24px; border:1px solid var(--line); border-radius:8px; background:var(--paper); }
+.members-card h2 { margin:0 0 16px; font-size:1.15rem; }
+.members-muted { color:var(--ink-dim); font-size:.85rem; line-height:1.6; }
+.members-invite, .members-actions { display:flex; align-items:end; gap:10px; flex-wrap:wrap; }
+.members-invite label, .members-role-form > label { display:grid; gap:6px; font-size:.875rem; }
+.members-invite input, .members-role-form > label input, .members-card select { padding:8px 10px; border:1px solid var(--line-strong); border-radius:5px; color:var(--ink); background:var(--paper); font:inherit; }
+.members-list { list-style:none; padding:0; margin:16px 0; }
+.members-list li { display:flex; gap:16px; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid var(--line); }
+.members-list li > div:first-child { display:grid; gap:5px; }
+.members-list li span { font-size:.8rem; color:var(--ink-dim); }
+.members-role-form { display:grid; gap:16px; padding-top:12px; }
+.members-role-form fieldset { display:flex; gap:20px; flex-wrap:wrap; padding:12px; border:1px solid var(--line); }
+.members-role-form fieldset label { display:flex; align-items:center; gap:6px; }
+.members-error { color:var(--danger,#b53939); } .members-success { color:var(--ok); }
+.members-sr { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+@media(max-width:640px) { .members-main { padding:0 16px 32px; margin:24px auto; } .members-card { padding:18px; } .members-list li { align-items:start; flex-direction:column; } }

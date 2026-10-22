@@ -1,20 +1,28 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { EditorContent, useEditor, type Editor } from "@tiptap/react";
+import { EditorContent, NodeViewWrapper, ReactNodeViewRenderer, useEditor, type Editor, type NodeViewProps } from "@tiptap/react";
 import { getSchema, Mark, mergeAttributes, type JSONContent } from "@tiptap/core";
 import { StarterKit } from "@tiptap/starter-kit";
 import { TableKit } from "@tiptap/extension-table";
 import { Image } from "@tiptap/extension-image";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { Collaboration } from "@tiptap/extension-collaboration";
-import { prosemirrorJSONToYDoc } from "@tiptap/y-tiptap";
 import * as Y from "yjs";
 import Comments from "./Comments";
 import Modal from "../Modal";
 import type { CommentThread } from "@/lib/comments";
 import { createClient } from "@/lib/supabase/browser";
-import { loadCollaboration, SupabaseYjsProvider } from "@/lib/collaboration";
+import { createBrowserEngine } from "@/lib/engine/browser";
+import {
+  applyLoadedCollaboration,
+  buildSeedUpdate,
+  loadCollaboration,
+  seedIfNeeded,
+  SupabaseYjsProvider,
+  type CollaborationStatusDetail,
+  type StaleRecoveryDetail,
+} from "@/lib/collaboration";
 import {
   Bold,
   Code,
@@ -33,6 +41,42 @@ import {
 const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
 const IMAGE_BUCKET = "page-images";
 
+// Private images use authenticated downloads and per-viewer blob URLs.
+// The shared document stores only the Storage path, never a bearer URL.
+function HestiaImageNodeView({ node }: NodeViewProps) {
+  const storagePath = (node.attrs.storagePath as string | null) ?? null;
+  const [src, setSrc] = useState<string>((node.attrs.src as string) || "");
+
+  useEffect(() => {
+    if (!storagePath) return;
+    let active = true;
+    let objectUrl: string | undefined;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
+    let failures = 0;
+    setSrc("");
+    const load = async () => {
+      try {
+        // Authenticated download avoids embedding a reusable signed capability in the DOM.
+        const { data, error } = await createClient().storage.from(IMAGE_BUCKET).download(storagePath);
+        if (!active) return;
+        if (error || !data) throw new Error("Image download unavailable");
+        objectUrl = URL.createObjectURL(data);
+        setSrc(objectUrl);
+      } catch {
+        if (active && ++failures < 4) retryTimer = setTimeout(() => { void load(); }, 15_000);
+      }
+    };
+    void load();
+    return () => { active = false; clearTimeout(retryTimer); if (objectUrl) URL.revokeObjectURL(objectUrl); };
+  }, [storagePath]);
+
+  return (
+    <NodeViewWrapper>
+      <img src={src || undefined} alt={(node.attrs.alt as string) || ""} draggable={false} referrerPolicy="no-referrer" />
+    </NodeViewWrapper>
+  );
+}
+
 const HestiaImage = Image.extend({
   addAttributes() {
     return {
@@ -43,6 +87,9 @@ const HestiaImage = Image.extend({
         renderHTML: (attributes: { storagePath?: string | null }) => attributes.storagePath ? { "data-storage-path": attributes.storagePath } : {},
       },
     };
+  },
+  addNodeView() {
+    return ReactNodeViewRenderer(HestiaImageNodeView);
   },
 });
 
@@ -86,6 +133,8 @@ type Props = {
   currentUser: { id: string; name: string };
   /** banner, title and stamp — they share the sheet with the editable body */
   header: React.ReactNode;
+  /** truthful collaboration connectivity, surfaced further up for e.g. gating version save */
+  onCollaborationStatus?: (detail: CollaborationStatusDetail) => void;
 };
 
 function Tool({
@@ -116,7 +165,7 @@ function Tool({
   );
 }
 
-export default function Doc({ content, editable, onEdit, seedComments, pageId, workspaceId, currentUser, header }: Props) {
+export default function Doc({ content, editable, onEdit, seedComments, pageId, workspaceId, currentUser, header, onCollaborationStatus }: Props) {
   const [threads, setThreads] = useState<CommentThread[]>(seedComments);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [activeThread, setActiveThread] = useState<string | null>(null);
@@ -125,35 +174,48 @@ export default function Doc({ content, editable, onEdit, seedComments, pageId, w
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [commentMessage, setCommentMessage] = useState<string | null>(null);
   const [collaborationReady, setCollaborationReady] = useState(!editable);
-  const [collaborationError, setCollaborationError] = useState<string | null>(null);
+  const [collaborationStatus, setCollaborationStatus] = useState<CollaborationStatusDetail | null>(null);
+  const [staleRecoveries, setStaleRecoveries] = useState<StaleRecoveryDetail[]>([]);
+  const [recoveryMessage, setRecoveryMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const collaborationDoc = useRef<Y.Doc | null>(null);
   const collaborationProvider = useRef<SupabaseYjsProvider | null>(null);
   const seedContent = useRef(content);
+  const onStatusRef = useRef(onCollaborationStatus);
+  onStatusRef.current = onCollaborationStatus;
   if (!collaborationDoc.current) collaborationDoc.current = new Y.Doc();
+  const stale = collaborationStatus?.status === "stale" || collaborationStatus?.status === "forbidden" || (collaborationStatus?.status === "error" && collaborationStatus.retryable === false);
 
   useEffect(() => {
     if (!editable) return;
     let active = true;
-    void loadCollaboration(pageId).then((session) => {
+    const reportStatus = (detail: CollaborationStatusDetail) => {
       if (!active) return;
-      if (session.collaboration_state) Y.applyUpdate(collaborationDoc.current!, Uint8Array.from(atob(session.collaboration_state), (char) => char.charCodeAt(0)));
-      const provider = new SupabaseYjsProvider(collaborationDoc.current!, pageId, session.collaboration_generation, currentUser);
-      collaborationProvider.current = provider;
-      if (session.should_seed) {
+      setCollaborationStatus(detail);
+      onStatusRef.current?.(detail);
+    };
+    void loadCollaboration(pageId).then(async (session) => {
+      if (!active) return;
+      applyLoadedCollaboration(collaborationDoc.current!, session, "initial-load");
+      if (session.shouldSeed) {
         const schema = getSchema([StarterKit.configure({ undoRedo: false }), TableKit.configure({ table: { resizable: true } }), HestiaImage, Placeholder, CommentMark]);
-        const initialDocument = prosemirrorJSONToYDoc(schema, seedContent.current, "default");
-        Y.applyUpdate(collaborationDoc.current!, Y.encodeStateAsUpdate(initialDocument));
-        void provider.persist();
+        const seedUpdate = buildSeedUpdate(schema, seedContent.current);
+        await seedIfNeeded(pageId, session.generation, seedUpdate, collaborationDoc.current!, "initial-load");
       }
+      if (!active) return;
+      const provider = new SupabaseYjsProvider(collaborationDoc.current!, pageId, session.generation, currentUser, {
+        onStatus: reportStatus,
+        onStaleRecovery: (detail) => { if (active) setStaleRecoveries((previous) => [...previous.filter((entry) => entry.generation !== detail.generation), detail]); },
+      });
+      collaborationProvider.current = provider;
       setCollaborationReady(true);
-    }).catch(() => { if (active) setCollaborationError("공동 편집을 연결하지 못했습니다. 새로고침 후 다시 시도하세요."); });
+    }).catch(() => { reportStatus({ status: "error", message: "공동 편집을 연결하지 못했습니다. 새로고침 후 다시 시도하세요.", retryable: true }); });
     return () => { active = false; collaborationProvider.current?.destroy(); collaborationProvider.current = null; };
   }, [editable, pageId, currentUser.id, currentUser.name]);
 
   async function insertImage(view: Editor["view"], file: File, pos = view.state.selection.from) {
-    if (!file.type.startsWith("image/")) {
-      setUploadError("이미지 파일만 추가할 수 있습니다.");
+    if (!["image/jpeg", "image/png", "image/gif", "image/webp"].includes(file.type)) {
+      setUploadError("JPG, PNG, GIF, WebP 이미지만 추가할 수 있습니다.");
       return;
     }
     if (file.size > MAX_IMAGE_BYTES) {
@@ -175,7 +237,7 @@ export default function Doc({ content, editable, onEdit, seedComments, pageId, w
 
   const editor = useEditor({
     immediatelyRender: false, // the shell renders on the server; the editor does not
-    editable: editable && collaborationReady,
+    editable: editable && collaborationReady && !stale,
     extensions: [
       StarterKit.configure({ undoRedo: editable ? false : undefined }),
       TableKit.configure({ table: { resizable: true } }),
@@ -205,7 +267,11 @@ export default function Doc({ content, editable, onEdit, seedComments, pageId, w
         return false;
       },
     },
-    onUpdate: ({ editor, transaction }) => { if (!transaction.getMeta("commentAnchor") && !transaction.getMeta("storageUrl")) onEdit(persistentContent(editor.getJSON())); },
+    onUpdate: ({ editor, transaction }) => { if ((!editable || collaborationReady) && !transaction.getMeta("commentAnchor")) onEdit(persistentContent(editor.getJSON())); },
+    // the live Yjs doc may already hold edits beyond `content` (collaboration_state loaded
+    // above) — publish it immediately so a version save before any keystroke never records
+    // the stale server snapshot instead of the actual current document.
+    onCreate: ({ editor }) => { if (editable && collaborationReady) onEdit(persistentContent(editor.getJSON())); },
   }, [collaborationReady]);
 
   // switching revisions replaces the body without pushing an undo step
@@ -219,7 +285,7 @@ export default function Doc({ content, editable, onEdit, seedComments, pageId, w
   // publishes an unrelated local draft.
   useEffect(() => {
     setThreads(seedComments);
-  }, [content, seedComments]);
+  }, [seedComments]);
 
   useEffect(() => {
     if (!editor) return;
@@ -233,28 +299,8 @@ export default function Doc({ content, editable, onEdit, seedComments, pageId, w
   }, [editor, seedComments]);
 
   useEffect(() => {
-    if (!editor) return;
-    const paths = new Set<string>();
-    editor.state.doc.descendants((node) => { if (node.type.name === "image" && node.attrs.storagePath) paths.add(node.attrs.storagePath as string); });
-    if (!paths.size) return;
-    let active = true;
-    void Promise.all([...paths].map(async (path) => [path, await createClient().storage.from(IMAGE_BUCKET).createSignedUrl(path, 60 * 60)] as const)).then((results) => {
-      if (!active) return;
-      const urls = new Map(results.filter(([, result]) => !result.error && result.data?.signedUrl).map(([path, result]) => [path, result.data!.signedUrl]));
-      if (!urls.size) return;
-      const tr = editor.state.tr;
-      editor.state.doc.descendants((node, pos) => {
-        const url = node.attrs.storagePath ? urls.get(node.attrs.storagePath as string) : undefined;
-        if (node.type.name === "image" && url && node.attrs.src !== url) tr.setNodeMarkup(pos, undefined, { ...node.attrs, src: url });
-      });
-      if (tr.docChanged) editor.view.dispatch(tr.setMeta("storageUrl", true));
-    });
-    return () => { active = false; };
-  }, [editor, content]);
-
-  useEffect(() => {
-    editor?.setEditable(editable && collaborationReady);
-  }, [editor, editable, collaborationReady]);
+    editor?.setEditable(editable && collaborationReady && !stale);
+  }, [editor, editable, collaborationReady, stale]);
 
   useEffect(() => {
     if (!menu) return;
@@ -282,10 +328,59 @@ export default function Doc({ content, editable, onEdit, seedComments, pageId, w
     }
   }, [menu, editor]);
 
+  const collaborationBanner =
+    collaborationStatus && collaborationStatus.message && (collaborationStatus.status === "stale" || collaborationStatus.status === "forbidden" || collaborationStatus.status === "error" || collaborationStatus.status === "offline") ? (
+      <p className="space-error" role="alert">
+        {collaborationStatus.message}
+        {collaborationStatus.retryable === false && <a className="ctl" href="/account/security" target="_blank" rel="noopener noreferrer">복구 자료 관리</a>}
+        {(collaborationStatus.status === "stale" || collaborationStatus.status === "forbidden") && (
+          <button type="button" className="ctl" onClick={() => window.location.reload()}>새로고침</button>
+        )}
+      </p>
+    ) : null;
+
+  const copyStaleRecovery = async (recovery: StaleRecoveryDetail) => {
+    try {
+      await navigator.clipboard.writeText(recovery.text);
+      setRecoveryMessage("복구 내용을 복사했습니다.");
+    } catch {
+      setRecoveryMessage("복사하지 못했습니다. 복구 파일 저장을 이용해 주세요.");
+    }
+  };
+
+  const downloadRecovery = (recovery: StaleRecoveryDetail) => {
+    const data = recovery.exportData?.() ?? recovery.text;
+    const href = URL.createObjectURL(new Blob([data], { type: recovery.exportData ? "application/json" : "text/plain" }));
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = `hestia-recovery-${pageId}-${recovery.generation}.${recovery.exportData ? "json" : "txt"}`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(href);
+  };
+
+  const staleRecoveryBanner = staleRecoveries.length ? (
+    <div>
+      {staleRecoveries.map((recovery) => <p className="space-error" role="alert" key={recovery.generation}>
+        복원 전에 저장하지 못한 편집 내용이 남아 있습니다. 복사하거나 파일로 저장할 수 있습니다. 현재 문서에는 자동으로 반영되지 않습니다.
+        <button type="button" className="ctl" onClick={() => { void copyStaleRecovery(recovery); }}>내용 복사</button>
+        <button type="button" className="ctl" onClick={() => downloadRecovery(recovery)}>복구 파일 저장</button>
+        <button type="button" className="ctl" onClick={() => {
+          if (!window.confirm("복구 내용을 다른 곳에 저장했나요? 이 브라우저의 복구 데이터를 삭제합니다.")) return;
+          recovery.clear();
+          setStaleRecoveries((previous) => previous.filter((entry) => entry.generation !== recovery.generation));
+        }}>복구 데이터 삭제</button>
+      </p>)}
+      {recoveryMessage && <p role="status">{recoveryMessage}</p>}
+    </div>
+  ) : null;
+
   if (!editor || (editable && !collaborationReady)) {
     return (
       <div className="doc-scroll">
-        {collaborationError && <p className="space-error" role="alert">{collaborationError}</p>}
+        {collaborationBanner}
+        {staleRecoveryBanner}
         <div className="skeleton" aria-hidden="true">
           <span />
           <span />
@@ -325,7 +420,7 @@ export default function Doc({ content, editable, onEdit, seedComments, pageId, w
     const id = crypto.randomUUID();
     const quote = editor.state.doc.textBetween(from, to, " ");
     setCommentMessage(null);
-    const { error } = await createClient().from("comment_threads").insert({ id, page_id: pageId, workspace_id: workspaceId, quote, anchor_from: from, anchor_to: to });
+    const { error } = await createBrowserEngine().comments.createThread({ id, pageId, workspaceId, quote, from, to });
     if (error) {
       setCommentMessage(error.message);
       setCommentsOpen(true);
@@ -384,7 +479,7 @@ export default function Doc({ content, editable, onEdit, seedComments, pageId, w
 
   async function reply(threadId: string, text: string) {
     setCommentMessage(null);
-    const { data, error } = await createClient().from("comments").insert({ thread_id: threadId, body: text }).select("id, created_at").single();
+    const { data, error } = await createBrowserEngine().comments.reply(threadId, text);
     if (error || !data) {
       setCommentMessage(error?.message ?? "댓글을 저장하지 못했습니다.");
       return;
@@ -396,7 +491,7 @@ export default function Doc({ content, editable, onEdit, seedComments, pageId, w
   // stays — deleting your own trail doesn't erase that it happened
   async function deleteComment(threadId: string, commentId: string) {
     setCommentMessage(null);
-    const { error } = await createClient().rpc("soft_delete_comment", { target_comment_id: commentId });
+    const { error } = await createBrowserEngine().comments.delete(commentId);
     if (error) {
       setCommentMessage(error.message);
       return;
@@ -497,6 +592,8 @@ export default function Doc({ content, editable, onEdit, seedComments, pageId, w
       </div>
 
       <div className="doc-scroll">
+        {collaborationBanner}
+        {staleRecoveryBanner}
         <div className="doc-sheet" onContextMenu={handleContextMenu}>
           {header}
           <EditorContent editor={editor} />
@@ -537,7 +634,7 @@ export default function Doc({ content, editable, onEdit, seedComments, pageId, w
               ref={fileInputRef}
               className="sr-only"
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/gif,image/webp"
               onChange={(event) => {
                 chooseImage(event.target.files?.[0]);
                 event.currentTarget.value = "";
